@@ -1,6 +1,6 @@
-package servlets;
+package controller;
 
-import beans.Board;
+import beans.Map;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -15,10 +15,10 @@ public class BoardServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-		Board board = new Board();
+		Map map = new Map();
 		
-		request.setAttribute("board", board);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("board.jsp");
+		request.setAttribute("map", map);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
         dispatcher.forward(request, response);
        
     }

@@ -20,6 +20,7 @@ public class BoardServlet extends HttpServlet {
 		request.setAttribute("map", map);
         RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
         dispatcher.forward(request, response);
+        System.out.println("z");
        
     }
 	

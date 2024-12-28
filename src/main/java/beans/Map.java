@@ -1,8 +1,13 @@
 package beans;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import model.CityTile;
 import utils.Constantes;
 import model.DefaultTile;
+import model.ForestTile;
+import model.MountainTile;
 import model.Player;
 import model.Soldier;
 import model.Tile;
@@ -17,16 +22,8 @@ public class Map {
 	public Map() {
 		this.grid = new Tile[Constantes.MAP_SIZE][Constantes.MAP_SIZE];
 		this.players = new Player[Constantes.MAP_N_PLAYER];
-		
-		for(int i = 0; i <Constantes.MAP_SIZE; i++) {
-			for(int j = 0; j < Constantes.MAP_SIZE; j++) {
-				this.grid[i][j] = new DefaultTile();
-			}
-		}
-		
-		this.grid[2][2] = new CityTile();
-		this.grid[2][2].setSoldier(new Soldier(0));
-		this.grid[2][2].setState(Constantes.TILE_STATE_OWN_BY_PLAYER_1);
+	
+		this.fillGridRandomly();
 		
 		//
 		this.idPlayerTurn = 1;
@@ -59,7 +56,72 @@ public class Map {
 
 	
 	//Methode
-	public int getIdNewPlayer() {
+	public void fillGridRandomly() {
+	    ArrayList<int[]> positions = new ArrayList<>();
+	    
+	    //Générer toutes les positions possibles dans une grille 10x10
+	    for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+	        for (int j = 0; j < Constantes.MAP_SIZE; j++) {
+	            positions.add(new int[] { i, j });
+	        }
+	    }
+	    
+	    // Mélanger les positions pour garantir l'aléatoire
+	    Collections.shuffle(positions);
+
+	    // Placer les villes
+	    ArrayList<int[]> cityPositions = new ArrayList<>();
+	    int citiesPlaced = 0;
+	    for (int[] pos : positions) {
+	        if (citiesPlaced == 4) break;
+	        boolean valid = true;
+	        for (int[] city : cityPositions) {
+	            int distance = Math.abs(city[0] - pos[0]) + Math.abs(city[1] - pos[1]);
+	            if (distance < 4) {
+	                valid = false;
+	                break;
+	            }
+	        }
+	        if (valid) {
+	            this.grid[pos[0]][pos[1]] = new CityTile();
+	            cityPositions.add(pos);
+	            citiesPlaced++;
+	        }
+	    }
+	    
+	    // Retirer les positions utilisées pour les villes
+	    positions.removeAll(cityPositions);
+
+	    // Placer les montagnes
+	    int mountainsPlaced = 0;
+	    for (int[] pos : positions) {
+	        if (mountainsPlaced == 5) break;
+	        this.grid[pos[0]][pos[1]] = new MountainTile();
+	        mountainsPlaced++;
+	    }
+
+	    // Retirer les positions utilisées pour les montagnes
+	    positions = new ArrayList<>(positions.subList(mountainsPlaced, positions.size()));
+
+	    // Placer les forêts
+	    int forestsPlaced = 0;
+	    for (int[] pos : positions) {
+	        if (forestsPlaced == 10) break;
+	        this.grid[pos[0]][pos[1]] = new ForestTile();
+	        forestsPlaced++;
+	    }
+
+	    // Remplir les cases restantes avec des tuiles par défaut
+	    for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+	        for (int j = 0; j < Constantes.MAP_SIZE; j++) {
+	            if (this.grid[i][j] == null) {
+	                this.grid[i][j] = new DefaultTile();
+	            }
+	        }
+	    }
+	}
+
+public int getIdNewPlayer() {
 		
 		for(int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
 			if(this.players[i] == null) {
@@ -86,6 +148,5 @@ public class Map {
 		int x = this.idPlayerTurn + 1;
 		this.idPlayerTurn = x > this.getCurrentNumberOfPlayer() ? 1 : x; 
 	}
-
 
 }

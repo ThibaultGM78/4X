@@ -8,11 +8,13 @@ public class Tile{
 	private String imagePath;
 	private Soldier soldier;
 	private int state;
+	private boolean isSoldier;
 	
 	//Constructor
 	public Tile (int type, String imagePath) {
 		this.type = type;
 		this.imagePath = imagePath;
+		this.isSoldier = false;
 	}
 
 	//GetSet
@@ -38,6 +40,8 @@ public class Tile{
 
 	public void setSoldier(Soldier soldier) {
 		this.soldier = soldier;
+		this.isSoldier = true;
+		this.state = soldier.getIdPlayerOwner();
 	}
 	
 	public int getState() {
@@ -48,6 +52,13 @@ public class Tile{
 		this.state = state;
 	}
 	
+	public boolean isSoldier() {
+		return isSoldier;
+	}
+
+	public void setSoldier(boolean isSoldier) {
+		this.isSoldier = isSoldier;
+	}
 	
 	//Methode
 	public String getOverlayImagePath() {
@@ -56,10 +67,10 @@ public class Tile{
 	
 	public String getCellCSSClass() {
 		
-		if(this.getType() == Constantes.TILE_TYPE_CITY ) {
+		if(this.getType() == Constantes.TILE_TYPE_CITY || this.isSoldier) {
 			return "cell cell" + String.valueOf(this.getState());
 		}
-		
+	
 		return "cell cell0";
 	}
 

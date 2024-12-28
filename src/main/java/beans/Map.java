@@ -2,6 +2,7 @@ package beans;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import model.CityTile;
 import utils.Constantes;
@@ -24,6 +25,8 @@ public class Map {
 		this.players = new Player[Constantes.MAP_N_PLAYER];
 	
 		this.fillGridRandomly();
+		//this.grid[1][1] = new CityTile();
+		//this.grid[1][1].setState(1);
 		
 		//
 		this.idPlayerTurn = 1;
@@ -121,18 +124,18 @@ public class Map {
 	    }
 	}
 
-public int getIdNewPlayer() {
+	public int getIdNewPlayer() {
 		
 		for(int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
 			if(this.players[i] == null) {
-				this.players[i] = new Player();
+				this.addNewPlayer(i);
 				return i + 1;
 			}
 			
 		}
 		return 0;
 	}
-	
+
 	public int getCurrentNumberOfPlayer() {
 		
 		for(int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
@@ -147,6 +150,20 @@ public int getIdNewPlayer() {
 		
 		int x = this.idPlayerTurn + 1;
 		this.idPlayerTurn = x > this.getCurrentNumberOfPlayer() ? 1 : x; 
+	}
+	
+	public void addNewPlayer(int id) {
+		this.players[id] = new Player();
+		
+	    Random random = new Random();
+	    int i, j;
+	    
+	   do {
+	    	i =  random.nextInt(10);
+	    	j = random.nextInt(10);
+	    }while(this.grid[i][j].isSoldier());
+	    
+	    this.grid[i][j].setSoldier(new Soldier(id + 1));
 	}
 
 }

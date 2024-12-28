@@ -24,7 +24,6 @@ public class BoardServlet extends HttpServlet {
 	   if(playerId == map.getIdPlayerTurn() && action != null) {
 		   
 		   if(action.equals("endTurn")) {
-			   System.out.println("hello");
 			   this.map.setNextPlayerTurn();
 		   }
 	   }

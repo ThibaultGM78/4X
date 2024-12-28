@@ -3,6 +3,8 @@ package utils;
 public class Constantes{
 
 	public static final int MAP_SIZE = 10;
+	public static final int MAP_N_PLAYER = 4;
+	
 	public static final String IMAGE_NULL_PATH = "";
 	
 	public static final int TILE_TYPE_DEFAULT = 0;

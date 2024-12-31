@@ -1,4 +1,4 @@
-package beans;
+package model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +18,7 @@ public class Map {
 	private Tile[][] grid;
 	private Player[] players;
 	private int idPlayerTurn;
+	private int idGame;
 	  
 	//Constructor
 	public Map() {
@@ -58,6 +59,14 @@ public class Map {
 	}
 
 	
+	public int getIdGame() {
+		return idGame;
+	}
+
+	public void setIdGame(int idGame) {
+		this.idGame = idGame;
+	}
+
 	//Methode
 	public void fillGridRandomly() {
 	    ArrayList<int[]> positions = new ArrayList<>();

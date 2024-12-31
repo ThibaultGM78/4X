@@ -1,4 +1,4 @@
-<%@ page import="beans.Map" %>
+<%@ page import="model.Map" %>
 <%@ page import="utils.Constantes" %>
 <%@ page import="model.Tile" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -16,7 +16,7 @@
 		<p><%= (String) session.getAttribute("idPlayer") %></p>
 	    <div class="grid">
 	        <% 
-		        beans.Map map = (beans.Map) request.getAttribute("map");
+		        model.Map map = (model.Map) request.getAttribute("map");
 		        Tile[][] grid = map.getGrid();
 		        String color;
 	            for (int i = 0; i < Constantes.MAP_SIZE; i++) {
@@ -55,21 +55,10 @@
     <script>
 	 	
         setInterval(function() {
-            //window.location.href = 'Board?idPlayer=' + idPlayer;
-
-            //Crée un formulaire
             var form = document.createElement("form");
             form.method = "POST";
             form.action = "Board";  // URL de destination
 
-            //Ajoute l'attribut idPlayer au formulaire
-           /*var input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "idPlayer";
-            input.value = idPlayer;  
-            form.appendChild(input);*/
-
-            //Soumet le formulaire
             document.body.appendChild(form);
             form.submit();
         }, 5000);
@@ -85,15 +74,7 @@
             actionInput.name = "action"; 
             actionInput.value = action; 
             form.appendChild(actionInput);
-            
-            /*var input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "idPlayer";
-            input.value = idPlayer;  
-            form.appendChild(input);*/
-            
-            console.log("coucou")
-            
+
             document.body.appendChild(form);
             form.submit();
         }

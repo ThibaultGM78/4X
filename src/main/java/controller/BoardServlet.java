@@ -16,10 +16,20 @@ public class BoardServlet extends HttpServlet {
         
 		//Map map = new Map();
 		
-	   String playerIdParam = request.getParameter("idPlayer");
+	   //String playerIdParam = request.getParameter("idPlayer");
 	   String action = request.getParameter("action");
+	   String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
+
+	   //int playerId = (playerIdParam != null) ? Integer.parseInt(playerIdParam) : map.getIdNewPlayer();
 	   
-	   int playerId = (playerIdParam != null) ? Integer.parseInt(playerIdParam) : map.getIdNewPlayer();
+	   int playerId;
+	   if(playerIdStr == null ) {
+		   playerId = map.getIdNewPlayer();
+		   request.getSession().setAttribute("idPlayer", String.valueOf(playerId));
+	   }
+	   else {
+		   playerId = Integer.parseInt(playerIdStr);
+	   }
 	   
 	   if(playerId == map.getIdPlayerTurn() && action != null) {
 		   

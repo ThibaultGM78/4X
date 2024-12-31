@@ -161,7 +161,7 @@ public class Map {
 	   do {
 	    	i =  random.nextInt(10);
 	    	j = random.nextInt(10);
-	    }while(this.grid[i][j].isSoldier());
+	    }while(this.grid[i][j].isSoldier() || this.grid[i][j].getType() == Constantes.TILE_TYPE_MOUNTAIN);
 	    
 	    this.grid[i][j].setSoldier(new Soldier(id + 1));
 	}

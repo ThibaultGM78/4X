@@ -10,83 +10,51 @@ import java.io.*;
 public class FrontControllerServlet extends HttpServlet {
     
 	private static final long serialVersionUID = 1L;
-	private  Map map = new Map();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
 		//SESSION
 		String idUserStr = (String) request.getSession().getAttribute("idUser");
-	
-		if(this.map == null) {
-			if((Map) request.getSession().getAttribute("map") != null ) {
-				this.map = (Map) request.getSession().getAttribute("map");
-			}
-			else {
-				this.map = new Map();
-			}
-		}
 		
+		Map map = Map.getInstance();
+	
 		if(idUserStr == null) {
 			new LoginController().handleRequest(request, response);
 		}
 		else {
 			String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
 			int playerId;
+			
 			if(playerIdStr == null ) {
 			   playerId = map.getIdNewPlayer();
 			   request.getSession().setAttribute("idPlayer", String.valueOf(playerId));
 			   map.getPlayer(playerId).setIdUser(Integer.parseInt(idUserStr));
+			   
+			   	request.setAttribute("idPlayer", playerId);
+				request.getSession().setAttribute("map", map);
+		        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+		        dispatcher.forward(request, response);
 		   }
 		   else {
 			   playerId = Integer.parseInt(playerIdStr);
+			   
+			   String action = request.getParameter("action");
+			   if(action != null && !action.isEmpty()) {
+					new ActionsController().handleRequest(request, response);
+				}  
+			   else {
+					request.setAttribute("idPlayer", playerId);
+					request.getSession().setAttribute("map", map);
+			        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+			        dispatcher.forward(request, response);
+			        
+			        System.out.println("Refresh: " + playerId + " / " + action + "/ " + map.getIdPlayerTurn());
+			   }
+			   
+			   
 		   }
-		
-			String action = request.getParameter("action");
-			if(action != null && !action.isEmpty()) {
-				//new ActionsController().handleRequest(request, response, map);
-				
-				 
-				    String posSoldier = request.getParameter("selectedSoldier"); 
-				    if(posSoldier != null && posSoldier != "") {
-				    	   String[] posParts = posSoldier.split(",");
-						    int posSoldierX = Integer.parseInt(posParts[0]);
-						    int posSoldierY = Integer.parseInt(posParts[1]);
-						    
-						    if(action.equals("top")) {
-						    	map.move(posSoldierX, posSoldierY, posSoldierX - 1, posSoldierY);
-						    }
-						    if(action.equals("bottom")) {
-						    	map.move(posSoldierX, posSoldierY, posSoldierX + 1, posSoldierY);
-						    }
-						    if(action.equals("right")) {
-						    	map.move(posSoldierX, posSoldierY, posSoldierX, posSoldierY - 1);
-						    }
-						    if(action.equals("left")) {
-						    	map.move(posSoldierX, posSoldierY, posSoldierX, posSoldierY + 1);
-						    }
-						    
-				    }
-				 
-				   if(playerId == map.getIdPlayerTurn() && action != null) {
-					   
-					   if(action.equals("endTurn")) {
-						   this.map.setNextPlayerTurn();
-						   this.map.nextTurn();
-					   }
-				   }
-			}
 			
-		   
-		 
-	       request.setAttribute("idPlayer", playerId);
-	       request.getSession().setAttribute("map", this.map);
-	        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
-	        dispatcher.forward(request, response);
-	        
-	          
-	        System.out.println("Refresh: " + playerId + " / " + action + "/ " + this.map.getIdPlayerTurn());
-	}
-		
+		}
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -10,7 +10,7 @@ public class Soldier {
 	public Soldier(int idPlayerOwner) {
 		this.idPlayerOwner = idPlayerOwner;
 		this.defensePoint = 6;
-		this.lastActionTurn = 0;
+		this.lastActionTurn = -1;
 	}
 
 	public int getDefensePoint() {

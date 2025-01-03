@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.IOException;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -7,49 +9,103 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Map;
-
-import java.io.IOException;
-import dao.DatabaseDAOImpl;
+import model.Soldier;
+import utils.Constantes;
 
 @WebServlet("/ActionController")
 public class ActionsController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) {
-        /*System.out.println("Action: ");
-       
-        String idUserStr = (String) request.getSession().getAttribute("idUser");
-        String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
-	    String posSoldier = request.getParameter("selectedSoldier");
-	    String action = request.getParameter("action");
-	    
+    	
+    	Map map = Map.getInstance();
+    	String action = request.getParameter("action");
+    	Integer idPlayer = Integer.parseInt((String) request.getSession().getAttribute("idPlayer"));
+    	
+    	String posSoldier = request.getParameter("selectedSoldier"); 
 	    if(posSoldier != null && posSoldier != "") {
-	    	   String[] posParts = posSoldier.split(",");
+	    	   	String[] posParts = posSoldier.split(",");
 			    int posSoldierX = Integer.parseInt(posParts[0]);
 			    int posSoldierY = Integer.parseInt(posParts[1]);
-			    System.out.println( "Soldat " + posSoldierX + " et " + posSoldierY );
+
+			    System.out.println("idPlayer " + idPlayer);
+			    
+			    if(action.equals("top") ) {
+			    	//map.move(posSoldierX, posSoldierY, posSoldierX - 1, posSoldierY, idPlayer);
+			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX - 1, posSoldierY, idPlayer, map);
+			    }
+			    if(action.equals("bottom")) {
+			    	//map.move(posSoldierX, posSoldierY, posSoldierX + 1, posSoldierY,  idPlayer);
+			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX + 1, posSoldierY, idPlayer, map);
+			    }
+			    if(action.equals("right")) {
+			    	//map.move(posSoldierX, posSoldierY, posSoldierX, posSoldierY - 1, idPlayer);
+			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX, posSoldierY - 1, idPlayer, map);
+			    }
+			    if(action.equals("left")) {
+			    	//map.move(posSoldierX, posSoldierY, posSoldierX, posSoldierY + 1, idPlayer);
+			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX, posSoldierY + 1, idPlayer, map);
+			    }
+	    }
+	    
+	    String posCity = request.getParameter("selectedCity"); 
+	    if(posCity != null && posCity != "") {
+	    	   	String[] posParts = posCity.split(",");
+			    int posCityX = Integer.parseInt(posParts[0]);
+			    int posCityY = Integer.parseInt(posParts[1]);
+			    
+			    if(action.equals("former")) {
+			    	if(!map.getGrid()[posCityX][posCityY].isSoldier()) {
+			    		
+			    		if(map.getPlayer(map.getIdPlayerTurn()).getGold() >= Constantes.COST_SOLDIER) {
+			    			map.getPlayer(map.getIdPlayerTurn()).retireGold(Constantes.COST_SOLDIER);
+			    			map.getGrid()[posCityX][posCityY].setSoldier(new Soldier(map.getIdPlayerTurn()));
+			    		}
+			    		
+			    		
+			    	}
+			    }
 	    }
 	 
-
-	   int playerId;
-	   if(playerIdStr == null ) {
-		   playerId = map.getIdNewPlayer();
-		   request.getSession().setAttribute("idPlayer", String.valueOf(playerId));
-		   map.getPlayer(playerId).setIdUser(Integer.parseInt(idUserStr));
-	   }
-	   else {
-		   playerId = Integer.parseInt(playerIdStr);
-	   }
-	   
-	   if(playerId == map.getIdPlayerTurn() && action != null) {
+	   if(idPlayer == map.getIdPlayerTurn() && action != null) {
 		   
 		   if(action.equals("endTurn")) {
-			  map.setNextPlayerTurn();
-			  map.nextTurn();
+			  
+			   map.nextTurn();
+			  
+			   
 		   }
 	   }
 	 
-       request.setAttribute("idPlayer", playerId);*/
+       request.setAttribute("idPlayer",  idPlayer);
+       request.getSession().setAttribute("map", map);
+       RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
       
+       
+       System.out.println("ACTION: " + action + " / TOUR: " + map.getTurn());
+       
+       try {
+		dispatcher.forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void actionMove(int posX, int posY, int posX2, int posY2, int idPlayer, Map map) {
+
+    	if(map.canMove(posX2, posY2)) {
+    		if(map.getGrid()[posX2][posY2].isSoldier() && map.getGrid()[posX2][posY2].getSoldier().getIdPlayerOwner() != map.getIdPlayerTurn()) {
+    			System.out.println("combat");
+    		}
+    		else {
+    			
+    			map.move(posX, posY, posX2, posY2, idPlayer);
+    		}
+    	}
+    	
     }
 }

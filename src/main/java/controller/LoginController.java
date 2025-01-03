@@ -39,7 +39,7 @@ public class LoginController extends HttpServlet {
             String mdp = request.getParameter("mdp");
 
             Integer idUser = DatabaseDAOImpl.authenticateUser(username, mdp);
-            if (idUser != null) {
+            if (idUser >= 0) {
                 System.out.println("Succes: id -> " + idUser);
                 request.getSession().setAttribute("idUser", String.valueOf(idUser));
                 request.getRequestDispatcher("Board").forward(request, response);

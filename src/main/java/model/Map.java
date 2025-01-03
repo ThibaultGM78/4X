@@ -19,6 +19,7 @@ public class Map {
 	private Player[] players;
 	private int idPlayerTurn;
 	private int idGame;
+	private int turn;
 	  
 	//Constructor
 	public Map() {
@@ -26,11 +27,10 @@ public class Map {
 		this.players = new Player[Constantes.MAP_N_PLAYER];
 	
 		this.fillGridRandomly();
-		//this.grid[1][1] = new CityTile();
-		//this.grid[1][1].setState(1);
 		
 		//
 		this.idPlayerTurn = 1;
+		this.setTurn(0);
 	}
 	
 	//GetSet
@@ -67,6 +67,14 @@ public class Map {
 		this.idGame = idGame;
 	}
 
+	public int getTurn() {
+		return turn;
+	}
+
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
+	
 	//Methode
 	public void fillGridRandomly() {
 	    ArrayList<int[]> positions = new ArrayList<>();
@@ -175,4 +183,29 @@ public class Map {
 	    this.grid[i][j].setSoldier(new Soldier(id + 1));
 	}
 
+	public Player getPlayer(int i) {
+		return this.players[i - 1];
+	}
+
+	public void nextTurn() {
+		this.turn += 1;
+	}
+	
+	public boolean canMove(int y, int x) {
+		
+		if(x < 0 || x >= Constantes.MAP_SIZE) return false;
+		if(y < 0 || y >= Constantes.MAP_SIZE) return false;
+		if(this.grid[x][y].getType() == Constantes.TILE_TYPE_MOUNTAIN) return false;
+		
+		return true;
+	}
+	
+	public void move(int x1, int y1, int x2, int y2) {
+		if(this.canMove(x2, y2)) {
+			System.out.println("ca bouge");
+			Soldier s = this.grid[x1][y1].getSoldier();
+			this.grid[x1][y1].clearSoldier();
+			this.grid[x2][y2].setSoldier(s);
+		}
+	}
 }

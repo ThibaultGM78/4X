@@ -23,4 +23,6 @@ public class Constantes{
 	public static final int TILE_STATE_OWN_BY_PLAYER_2 = 2;
 	public static final int TILE_STATE_OWN_BY_PLAYER_3 = 3;
 	public static final int TILE_STATE_OWN_BY_PLAYER_4 = 4;
+	
+	public static final int NON_VALABLE = -1;
 }

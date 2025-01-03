@@ -32,7 +32,8 @@ public class Map {
         
         
         this.grid[0][0].setSoldier(new Soldier(1));
-        this.grid[1][0].setSoldier(new Soldier(2));
+        this.grid[1][0] = new CityTile();
+        this.grid[1][0].setState(Constantes.TILE_STATE_OWN_BY_PLAYER_2);
     }
 
     // Méthode pour obtenir l'instance unique (singleton)
@@ -221,8 +222,8 @@ public class Map {
             
             if(this.grid[x2][y2].getType() == Constantes.TILE_TYPE_CITY) {
             	this.grid[x2][y2].setState(idPlayer);
+            	
             }
-            
             
         }
     }

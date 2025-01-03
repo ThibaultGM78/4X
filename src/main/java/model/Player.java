@@ -56,4 +56,6 @@ public class Player{
 	public void retireGold(int g) {
 		this.gold -= g;
 	}
+	
+
 }

@@ -9,6 +9,7 @@ public class Tile{
 	private Soldier soldier;
 	private int state;
 	private boolean isSoldier;
+	private int defensePoint;
 	
 	//Constructor
 	public Tile (int type, String imagePath) {
@@ -16,6 +17,7 @@ public class Tile{
 		this.imagePath = imagePath;
 		this.state = Constantes.TILE_STATE_DEFAULT;
 		this.isSoldier = false;
+		this.defensePoint = Constantes.CITY_DEFENSE;
 	}
 
 	//GetSet
@@ -51,6 +53,7 @@ public class Tile{
 
 	public void setState(int state) {
 		this.state = state;
+		this.defensePoint = Constantes.CITY_DEFENSE;
 	}
 	
 	public boolean isSoldier() {
@@ -65,6 +68,18 @@ public class Tile{
 		
 	}
 	
+	public int getDefense() {
+		return defensePoint;
+	}
+
+	public void setDefense(int defense) {
+		this.defensePoint = defense;
+	}
+
+	public void setSoldier(boolean isSoldier) {
+		this.isSoldier = isSoldier;
+	}
+
 	//Methode
 	public String getOverlayImagePath() {
 		return this.isSoldier() ? this.soldier.getImagePath() : Constantes.IMAGE_NULL_PATH;
@@ -78,6 +93,16 @@ public class Tile{
 		}
 		return "cell cell0";
 	}
-
+	
+	public void receiveDamage(int d) {
+		this.defensePoint -= d;
+		if(this.defensePoint < 0) {
+			this.defensePoint = 0;
+		}
+	}
+	
+	public boolean isKo() {
+		return this.defensePoint <= 0;
+	}
 
 }

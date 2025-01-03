@@ -9,7 +9,7 @@ public class Soldier {
 	
 	public Soldier(int idPlayerOwner) {
 		this.idPlayerOwner = idPlayerOwner;
-		this.defensePoint = 6;
+		this.defensePoint = 12;
 		this.lastActionTurn = -1;
 	}
 
@@ -39,5 +39,17 @@ public class Soldier {
 
 	public void setLastActionTurn(int lastActionTurn) {
 		this.lastActionTurn = lastActionTurn;
+	}
+	
+	//methode
+	public void receiveDamage(int d) {
+		this.defensePoint -= d;
+		if(this.defensePoint < 0) {
+			this.defensePoint = 0;
+		}
+	}
+	
+	public boolean isKo() {
+		return this.defensePoint <= 0;
 	}
 }

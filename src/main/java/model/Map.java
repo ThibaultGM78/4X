@@ -195,14 +195,14 @@ public class Map {
 		
 		if(x < 0 || x >= Constantes.MAP_SIZE) return false;
 		if(y < 0 || y >= Constantes.MAP_SIZE) return false;
-		if(this.grid[x][y].getType() == Constantes.TILE_TYPE_MOUNTAIN) return false;
+		if(this.grid[y][x].getType() == Constantes.TILE_TYPE_MOUNTAIN) return false;
 		
 		return true;
 	}
 	
 	public void move(int x1, int y1, int x2, int y2) {
 		if(this.canMove(x2, y2)) {
-			System.out.println("ca bouge");
+			System.out.println("ca bouge: " + y2 + " / " + x2);
 			Soldier s = this.grid[x1][y1].getSoldier();
 			this.grid[x1][y1].clearSoldier();
 			this.grid[x2][y2].setSoldier(s);

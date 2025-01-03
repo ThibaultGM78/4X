@@ -14,7 +14,17 @@ public class FrontControllerServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
+		//SESSION
 		String idUserStr = (String) request.getSession().getAttribute("idUser");
+	
+		if(this.map == null) {
+			if((Map) request.getSession().getAttribute("map") != null ) {
+				this.map = (Map) request.getSession().getAttribute("map");
+			}
+			else {
+				this.map = new Map();
+			}
+		}
 		
 		if(idUserStr == null) {
 			new LoginController().handleRequest(request, response);
@@ -69,7 +79,7 @@ public class FrontControllerServlet extends HttpServlet {
 		   
 		 
 	       request.setAttribute("idPlayer", playerId);
-			request.setAttribute("map", map);
+	       request.getSession().setAttribute("map", this.map);
 	        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
 	        dispatcher.forward(request, response);
 	        

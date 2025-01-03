@@ -14,9 +14,10 @@
 	<div>
 		<h1>4X</h1>
 		<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %></p>
+	    <div>
 	    <div class="grid">
 	        <% 
-		        model.Map map = (model.Map) request.getAttribute("map");
+		        model.Map map = (model.Map) session.getAttribute("map");
 		        Tile[][] grid = map.getGrid();
 		        String color;
 	            for (int i = 0; i < Constantes.MAP_SIZE; i++) {
@@ -41,7 +42,7 @@
 	            }
 	        %>
 	    </div>
-	    <div>
+	    <div container>
 	    <% if(map.getIdPlayerTurn() == Integer.parseInt((String) session.getAttribute("idPlayer"))){
 	    	%>
 	    		<p>Ton tour</p>
@@ -75,9 +76,10 @@
 			    <% } %>
 	    
 	    </div>
+	    </div>
     </div>
     <script>
-	 	
+    
         setInterval(function() {
             var form = document.createElement("form");
             form.method = "POST";

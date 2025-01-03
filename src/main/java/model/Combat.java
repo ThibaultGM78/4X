@@ -3,14 +3,14 @@ package model;
 public class Combat {
 	
 	private int defPt;
-	private Player atqPlayer;
-	private Player defPlayer;
+	private String atqPlayer;
+	private String defPlayer;
 	private int dice1;
 	private int dice2;
 	private int initDefLife;
 	private int type;
 	
-	public Combat(int defPt, Player pAtq, Player pDef, int type) {
+	public Combat(int defPt, String pAtq, String pDef, int type) {
 		this.defPt = defPt;
 		this.atqPlayer= pAtq;
 		this.defPlayer= pDef;
@@ -21,19 +21,19 @@ public class Combat {
 	    this.dice2 = (int) (Math.random() * 6) + 1;
 	}
 
-	public Player getAtqPlayer() {
+	public String getAtqPlayer() {
 		return atqPlayer;
 	}
 
-	public void setAtqPlayer(Player atqPlayer) {
+	public void setAtqPlayer(String atqPlayer) {
 		this.atqPlayer = atqPlayer;
 	}
 
-	public Player getDefPlayer() {
+	public String getDefPlayer() {
 		return defPlayer;
 	}
 
-	public void setDefPlayer(Player defPlayer) {
+	public void setDefPlayer(String defPlayer) {
 		this.defPlayer = defPlayer;
 	}
 

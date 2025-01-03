@@ -26,14 +26,6 @@ public class Map {
         
         this.idPlayerTurn = 1;
         this.setTurn(0);
-        
-        //this.grid[0][0] = new CityTile();
-        //this.grid[0][0].setState(Constantes.TILE_STATE_OWN_BY_PLAYER_1);
-        
-        
-        this.grid[0][0].setSoldier(new Soldier(1));
-        this.grid[1][0] = new CityTile();
-        this.grid[1][0].setState(Constantes.TILE_STATE_OWN_BY_PLAYER_2);
     }
 
     // Méthode pour obtenir l'instance unique (singleton)

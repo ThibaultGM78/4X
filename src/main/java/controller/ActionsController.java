@@ -117,8 +117,8 @@ public class ActionsController extends HttpServlet {
     			
     			Combat combat = new Combat(
     					map.getGrid()[posX2][posY2].getSoldier().getDefensePoint(),
-    					map.getPlayer(map.getGrid()[posX][posY].getSoldier().getIdPlayerOwner()),
-    					map.getPlayer(map.getGrid()[posX2][posY2].getSoldier().getIdPlayerOwner()),
+    					"attaque",
+    					"defense",
     					Constantes.COMBAT_TYPE_SOLDIER
     					);
     			
@@ -148,10 +148,12 @@ public class ActionsController extends HttpServlet {
     			request.setAttribute("defX", posX2);
     			request.setAttribute("defX", posY2);
     			
+    			
+    			
     			Combat combat = new Combat(
     					map.getGrid()[posX2][posY2].getDefense(),
-    					map.getPlayer(map.getGrid()[posX][posY].getSoldier().getIdPlayerOwner()),
-    					map.getPlayer(map.getGrid()[posX2][posY2].getState()),
+    					"attaque",
+    					"defense",
     					Constantes.COMBAT_TYPE_CITY
     					);
     			

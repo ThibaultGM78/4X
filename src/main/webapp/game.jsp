@@ -44,7 +44,7 @@
 						                    pos = i + "," + j;
 						    %>
 						        <div class="soldier-row">
-						            <span>Soldat [<%= pos %>]; defense = <%= map.getGrid()[i][j].getSoldier().getDefensePoint() %>/<%= map.getGrid()[i][j].getSoldier().getMaxDefensePoint()%> :</span>
+						            <span>Soldat [<%= pos %>]; defense = <%= map.getGrid()[i][j].getSoldier().getDefensePoint() %>/<%= map.getGrid()[i][j].getSoldier().getMaxDefensePoint() %> :</span>
 						            
 						            <% if( map.getGrid()[i][j].getSoldier().getLastActionTurn() < map.getTurn()) {
 						             %>

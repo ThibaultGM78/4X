@@ -27,10 +27,14 @@ public class Constantes{
 	public static final int NON_VALABLE = -1;
 	
 	public static final int REWARD_CITY_CONTROL = 4;
+	public static final int REWARD_FOREST_FORAGE = 3;
+	
 	public static final int COST_SOLDIER = 12;
 	
 	public static final int COMBAT_TYPE_SOLDIER = 0;
 	public static final int COMBAT_TYPE_CITY = 0;
 	
 	public static final int CITY_DEFENSE = 8;
+	public static final int SOLDIER_DEFENSE = 12;
+	public static final int SOLDIER_HEAL = 4;
 }

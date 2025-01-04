@@ -18,55 +18,94 @@
 	    <div class="container">
 	    	<div>
 	    	<h1>4X</h1>
-			<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %></p>
+			<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %> 
+				/ Name == <%= map.getPlayer(Integer.parseInt((String) session.getAttribute("idPlayer"))).getName() %></p>
 			<p>Argent: <%= map.getPlayer(idPlayer).getGold() %></p>
+			<p>Tour de <%= map.getActuelPlayer().getName() %></p>
 		    <% if(map.getIdPlayerTurn() == Integer.parseInt((String) session.getAttribute("idPlayer"))){
 		    	%>
-		    		<p>Ton tour</p>
 		    		<div>
 					    <h2>Action Soldat</h2>
-					    <select id="posSoldat">
-					        <option value="">Sélectionnez un soldat</option>
-								<% 
-									        
-								String pos;
-					            for (int i = 0; i < Constantes.MAP_SIZE; i++) {
-					            	for(int j = 0; j < Constantes.MAP_SIZE; j++)
-					            		if(map.getGrid()[i][j].isSoldier() && map.getGrid()[i][j].getSoldier().getIdPlayerOwner() == map.getIdPlayerTurn() 
-					            			&& map.getGrid()[i][j].getSoldier().getLastActionTurn() < map.getTurn()
-					            				){
-					            			pos = i + "," + j;
-					            			%> 
-					            			<option value="<%= pos%>">Soldat <%= pos %></option>
-					            			<%
-					            		}
-	
-					         		}  
-						         %>
-					    </select>
-					    <button type="submit" name="direction" value="top" onclick="setAction('top')">Haut</button>
-				        <button type="submit" name="direction" value="bottom" onclick="setAction('bottom')">Bas</button>
-				        <button type="submit" name="direction" value="right" onclick="setAction('right')">Gauche</button>
-				        <button type="submit" name="direction" value="left" onclick="setAction('left')">Droite</button>
-				        
-				         <h2>Action Cité</h2>
-				         <select id="posCity">
-					        <option value="">Sélectionnez une cité</option>
-								<%
-					            for (int i = 0; i < Constantes.MAP_SIZE; i++) {
-					            	for(int j = 0; j < Constantes.MAP_SIZE; j++)
-					            		if(map.getGrid()[i][j].getType() == Constantes.TILE_TYPE_CITY && map.getGrid()[i][j].getState() == idPlayer) {
-					            			pos = i + "," + j;
-					            			%> 
-					            			<option value="<%= pos%>">Cité <%= pos %></option>
-					            			<%
-					            		}
-	
-					         		}  
-						         %>
-					    </select>
-					    <button type="submit" name="city" value="former" onclick="setAction('former')">Former une troupe</button>
+						<div id="soldier-actions">
+						    <%
+						        String pos;
+						        for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+						            for (int j = 0; j < Constantes.MAP_SIZE; j++) {
+						                if (map.getGrid()[i][j].isSoldier() &&
+						                    map.getGrid()[i][j].getSoldier().getIdPlayerOwner() == map.getIdPlayerTurn() &&
+						                    map.getGrid()[i][j].getSoldier().getLastActionTurn() < map.getTurn()) {
+						
+						                    pos = i + "," + j;
+						    %>
+						        <div class="soldier-row">
+						            <span>Soldat <%= pos %>, defense = <%= map.getGrid()[i][j].getSoldier().getDefensePoint() %> </span>
+						            
+						            <% 
+						            if(map.canMove(i - 1, j)){
+						            	%><button type="button" onclick="setActionSoldier('top', '<%= pos %>')">Haut</button><% 
+						            }
+						            %>
+						            <% 
+						            if(map.canMove(i + 1, j)){
+						            	%><button type="button" onclick="setActionSoldier('bottom', '<%= pos %>')">Bas</button><% 
+						            }
+						            %>
+						            <% 
+						            if(map.canMove(i, j - 1)){
+						            	%><button type="button" onclick="setActionSoldier('right', '<%= pos %>')">Gauche</button><% 
+						            }
+						            %>
+						            <% 
+						            if(map.canMove(i, j + 1)){
+						            	%><button type="button" onclick="setActionSoldier('left', '<%= pos %>')">Droite</button><% 
+						            }
+						            %>   
+						            <% 
+						            if(map.getGrid()[i][j].getType() == Constantes.TILE_TYPE_FOREST){
+						            	%><button type="button" onclick="setActionSoldier('forage', '<%= pos %>')">Forage</button><% 
+						            }
+						            %>
+						           <% 
+						            if(map.getGrid()[i][j].getSoldier().isBlessed()){
+						            	%><button type="button" onclick="setActionSoldier('heal', '<%= pos %>')">Soin</button><% 
+						            }
+						            %>
+						        </div>
+						    <%
+						                }
+						            }
+						        }
+						    %>
+						</div>
+					    
+				        <div>
+
+					        <h2>Action Cité</h2>
+							<div id="city-actions">
+							    <%
+							        for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+							            for (int j = 0; j < Constantes.MAP_SIZE; j++) {
+							                if (map.getGrid()[i][j].getType() == Constantes.TILE_TYPE_CITY &&
+							                    map.getGrid()[i][j].getState() == idPlayer) {
+							
+							                    pos = i + "," + j;
+							    %>
+							        <div class="city-row">
+							            <span>Cité <%= pos %></span>
+							            
+							            <% if(map.getActuelPlayer().getGold() >= Constantes.COST_SOLDIER){
+							            	%><button type="button" onclick="setCityAction('former', '<%= pos %>')">Former une troupe</button><%
+							            }%>
+							        </div>
+							    <%
+							                }
+							            }
+							        }
+							    %>
+							</div>   
+					    </div>
 					</div>
+		    		
 		    		
 				    <button type="submit" onclick="setAction('endTurn')">Fin de tour</button>
 				    <% } %>
@@ -124,20 +163,41 @@
             actionInput.value = action; 
             form.appendChild(actionInput);
             
-            var selectedSoldier = document.getElementById("posSoldat").value;
+            /*var selectedSoldier = document.getElementById("posSoldat").value;
             var soldierInput = document.createElement("input");
             soldierInput.type = "hidden";
             soldierInput.name = "selectedSoldier"; 
             soldierInput.value = selectedSoldier;
-            form.appendChild(soldierInput);
+            form.appendChild(soldierInput);*/
             
-            var selectedCity = document.getElementById("posCity").value;
+            /*var selectedCity = document.getElementById("posCity").value;
             var cityInput = document.createElement("input");
             cityInput.type = "hidden";
             cityInput.name = "selectedCity"; 
             cityInput.value = selectedCity;
-            form.appendChild(cityInput);
+            form.appendChild(cityInput);*/
 
+            document.body.appendChild(form);
+            form.submit();
+        }
+        
+        function setActionSoldier(action,pos){
+        	var form = document.createElement("form");
+            form.method = "POST";
+            form.action = "Board";
+            
+            var actionInput = document.createElement("input");
+            actionInput.type = "hidden";
+            actionInput.name = "action"; 
+            actionInput.value = action; 
+            form.appendChild(actionInput);
+            
+            var soldierInput = document.createElement("input");
+            soldierInput.type = "hidden";
+            soldierInput.name = "selectedSoldier"; 
+            soldierInput.value = pos;
+            form.appendChild(soldierInput);
+            
             document.body.appendChild(form);
             form.submit();
         }

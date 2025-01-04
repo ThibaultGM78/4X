@@ -46,5 +46,22 @@ public class DatabaseDAOImpl{
 	        return isCreated;
 	    }
 	
+	 public static String getUserName(int idUser) {
+		 String name = "";
+		    try {
+		        Connection connection = DbConnection.getConnection();
+		        String query = "SELECT username FROM users WHERE id = ?";
+		        PreparedStatement stmt = connection.prepareStatement(query);
+		        stmt.setLong(1, idUser);
+
+		        ResultSet rs = stmt.executeQuery();
+		        if (rs.next()) {
+		            name = rs.getString("username"); 
+		        }
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return name; 
+	 }
 	
 }

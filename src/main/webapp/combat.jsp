@@ -45,12 +45,12 @@
 
     <div class="container">
         <div class="column atq">
-            <h2>Attaquant</h2>
+            <h2>Attaque de <%= combat.getAtqPlayer() %></h2>
             <p>Attaque: <%= total %></p>
             <img src="./images/icons/Large/soldier.png" alt="Image Attaquant">
         </div>
         <div class="column ">
-            <h2>Défenseur</h2>
+            <h2>Défense de <%= combat.getDefPlayer() %></h2>
             <p>Defense Initial: <%= combat.getInitDefLife() %></p>
             <p>Defense Apres Combat: <%= combat.getDefLifeAfterCombat() %></p>
             <img src="./images/icons/Large/soldier.png" alt="Image Défenseur">

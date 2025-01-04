@@ -22,7 +22,9 @@ public class FrontControllerServlet extends HttpServlet {
 			new LoginController().handleRequest(request, response);
 		}
 		else {
-			String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
+			
+			//idPlayerAttribution
+			/*String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
 			int playerId;
 			
 			if(playerIdStr == null ) {
@@ -35,25 +37,24 @@ public class FrontControllerServlet extends HttpServlet {
 		        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
 		        dispatcher.forward(request, response);
 		   }
+		   else {*/
+			   
+			   
+		   Integer playerId = Integer.parseInt((String) request.getSession().getAttribute("idPlayer"));
+		   
+		   String action = request.getParameter("action");
+		   if(action != null && !action.isEmpty()) {
+				new ActionsController().handleRequest(request, response);
+			}  
 		   else {
-			   playerId = Integer.parseInt(playerIdStr);
-			   
-			   String action = request.getParameter("action");
-			   if(action != null && !action.isEmpty()) {
-					new ActionsController().handleRequest(request, response);
-				}  
-			   else {
-					request.setAttribute("idPlayer", playerId);
-					request.getSession().setAttribute("map", map);
-			        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
-			        dispatcher.forward(request, response);
-			        
-			        System.out.println("Refresh: " + playerId + " / " + action + "/ " + map.getIdPlayerTurn());
-			   }
-			   
-			   
+				request.setAttribute("idPlayer", playerId);
+				request.getSession().setAttribute("map", map);
+		        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+		        dispatcher.forward(request, response);
+		        
+		        System.out.println("Refresh: " + playerId + " / " + action + "/ " + map.getIdPlayerTurn());
 		   }
-			
+
 		}
     }
 	

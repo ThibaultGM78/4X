@@ -6,6 +6,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Map;
+
 import java.io.IOException;
 import dao.DatabaseDAOImpl;
 
@@ -40,10 +42,20 @@ public class LoginController extends HttpServlet {
 
             Integer idUser = DatabaseDAOImpl.authenticateUser(username, mdp);
             if (idUser >= 0) {
-                System.out.println("Succes: id -> " + idUser);
-                request.getSession().setAttribute("idUser", String.valueOf(idUser));
-                request.getRequestDispatcher("Board").forward(request, response);
+            	
+            	String name = DatabaseDAOImpl.getUserName(idUser);
+   
+                Map map = Map.getInstance();
+                int idPlayer = map.getIdNewPlayer(idUser, name);
                 
+                System.out.println("New session player : " + idPlayer + "/ name :" + name);
+                
+                request.getSession().setAttribute("idPlayer", String.valueOf(idPlayer));
+                request.getSession().setAttribute("idUser", String.valueOf(idUser));
+				request.getSession().setAttribute("map", map);
+				
+		        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+    		    dispatcher.forward(request, response);
             } else {
                 request.setAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
                 request.getRequestDispatcher("login.jsp").forward(request, response);

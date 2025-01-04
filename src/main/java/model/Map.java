@@ -26,6 +26,9 @@ public class Map {
         
         this.idPlayerTurn = 1;
         this.setTurn(0);
+        
+        this.getGrid()[0][0].setSoldier(new Soldier(1));
+        this.getGrid()[1][0].setSoldier(new Soldier(2));
     }
 
     // Méthode pour obtenir l'instance unique (singleton)
@@ -139,11 +142,15 @@ public class Map {
         }
     }
 
-    public int getIdNewPlayer() {
+    public int getIdNewPlayer(int idUser, String name) {
         for (int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
             if (this.players[i] == null) {
-                this.addNewPlayer(i);
+                this.addNewPlayer(i, idUser, name);
+                
                 return i + 1;
+            }
+            if(this.players[i].getIdUser() == idUser) {
+            	return i + 1;
             }
         }
         return 0;
@@ -163,9 +170,12 @@ public class Map {
         this.idPlayerTurn = x > this.getCurrentNumberOfPlayer() ? 1 : x;
     }
 
-    public void addNewPlayer(int id) {
-        this.players[id] = new Player();
+    public void addNewPlayer(int idPlayer, int idUser, String name) {
+        this.players[idPlayer] = new Player();
 
+        this.players[idPlayer].setIdUser(idUser);
+        this.players[idPlayer].setName(name);
+        
         Random random = new Random();
         int i, j;
 
@@ -174,7 +184,7 @@ public class Map {
             j = random.nextInt(10);
         } while (this.grid[i][j].isSoldier() || this.grid[i][j].getType() == Constantes.TILE_TYPE_MOUNTAIN);
 
-        this.grid[i][j].setSoldier(new Soldier(id + 1));
+        this.grid[i][j].setSoldier(new Soldier(idPlayer + 1));
     }
 
     public Player getPlayer(int i) {
@@ -218,6 +228,10 @@ public class Map {
             }
             
         }
+    }
+    
+    public Player getActuelPlayer() {
+    	return this.getPlayer(this.idPlayerTurn);
     }
     
 }

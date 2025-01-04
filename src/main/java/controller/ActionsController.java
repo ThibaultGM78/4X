@@ -33,20 +33,30 @@ public class ActionsController extends HttpServlet {
 			    
 		        System.out.println("ACTION: " + action + " / TOUR: " + map.getTurn());
 			    if(action.equals("top") ) {
-			    	//map.move(posSoldierX, posSoldierY, posSoldierX - 1, posSoldierY, idPlayer);
 			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX - 1, posSoldierY, idPlayer, map, request, response);
 			    }
-			    if(action.equals("bottom")) {
-			    	//map.move(posSoldierX, posSoldierY, posSoldierX + 1, posSoldierY,  idPlayer);
+			    else if(action.equals("bottom")) {
 			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX + 1, posSoldierY, idPlayer, map, request, response);
 			    }
-			    if(action.equals("right")) {
-			    	//map.move(posSoldierX, posSoldierY, posSoldierX, posSoldierY - 1, idPlayer);
+			    else if(action.equals("right")) {
 			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX, posSoldierY - 1, idPlayer, map, request, response);
 			    }
-			    if(action.equals("left")) {
-			    	//map.move(posSoldierX, posSoldierY, posSoldierX, posSoldierY + 1, idPlayer);
+			    else if(action.equals("left")) {
 			    	this.actionMove(posSoldierX, posSoldierY, posSoldierX, posSoldierY + 1, idPlayer, map, request, response);
+			    }
+			    else if(action.equals("forage")) {
+			    	map.getActuelPlayer().addGold(Constantes.REWARD_FOREST_FORAGE);
+			    	map.getGrid()[posSoldierX][posSoldierY].getSoldier().setLastActionTurn(map.getTurn());
+			    	
+			        System.out.println("Forage");
+			        this.gameRedirection(request, response, idPlayer, map);
+			    }
+			    else if(action.equals("heal")) {
+			    	map.getGrid()[posSoldierX][posSoldierY].getSoldier().receiveHeal(Constantes.SOLDIER_HEAL);
+			    	map.getGrid()[posSoldierX][posSoldierY].getSoldier().setLastActionTurn(map.getTurn());
+			    	
+			        System.out.println("Forage");
+			        this.gameRedirection(request, response, idPlayer, map);
 			    }
 	    }
 	    else {
@@ -104,105 +114,103 @@ public class ActionsController extends HttpServlet {
     	request.setAttribute("idPlayer",  idPlayer);
         request.getSession().setAttribute("map", map);
         
-    	if(map.canMove(posX2, posY2)) {
-    		
-    		RequestDispatcher dispatcher;
-    		
-    		if(map.getGrid()[posX2][posY2].isSoldier() && map.getGrid()[posX2][posY2].getSoldier().getIdPlayerOwner() != map.getIdPlayerTurn()) {
-    			
-    			request.setAttribute("atqX", posX);
-    			request.setAttribute("atqY", posY);
-    			request.setAttribute("defX", posX2);
-    			request.setAttribute("defX", posY2);
-    			
-    			Combat combat = new Combat(
-    					map.getGrid()[posX2][posY2].getSoldier().getDefensePoint(),
-    					"attaque",
-    					"defense",
-    					Constantes.COMBAT_TYPE_SOLDIER
-    					);
-    			
-    			map.getGrid()[posX][posY].getSoldier().setLastActionTurn(map.getTurn());
-    			
-				if(combat.isVictory()) {
-					
-					if(map.getGrid()[posX2][posY2].getType() != Constantes.TILE_TYPE_CITY) {
-						map.move(posX, posY, posX2, posY2, idPlayer);
-					}
-					else {
-						map.getGrid()[posX2][posY2].clearSoldier();
-					}
-					
-				}
-				else {
-					map.getGrid()[posX2][posY2].getSoldier().setDefensePoint(combat.getDefLifeAfterCombat());
-				}
-    			
-    
-    			request.setAttribute("combat", combat);
-    			dispatcher = request.getRequestDispatcher("combat.jsp");
-    		}
-    		else if(map.getGrid()[posX2][posY2].getType() == Constantes.TILE_TYPE_CITY && map.getGrid()[posX2][posY2].getState() != map.getIdPlayerTurn()){
-    			request.setAttribute("atqX", posX);
-    			request.setAttribute("atqY", posY);
-    			request.setAttribute("defX", posX2);
-    			request.setAttribute("defX", posY2);
-    			
-    			
-    			
-    			Combat combat = new Combat(
-    					map.getGrid()[posX2][posY2].getDefense(),
-    					"attaque",
-    					"defense",
-    					Constantes.COMBAT_TYPE_CITY
-    					);
-    			
-    			map.getGrid()[posX][posY].getSoldier().setLastActionTurn(map.getTurn());
-    			
-				if(combat.isVictory()) {
-					
+		RequestDispatcher dispatcher;
+		
+		if(map.getGrid()[posX2][posY2].isSoldier() && map.getGrid()[posX2][posY2].getSoldier().getIdPlayerOwner() != map.getIdPlayerTurn()) {
+			
+			request.setAttribute("atqX", posX);
+			request.setAttribute("atqY", posY);
+			request.setAttribute("defX", posX2);
+			request.setAttribute("defX", posY2);
+			
+			Combat combat = new Combat(
+					map.getGrid()[posX2][posY2].getSoldier().getDefensePoint(),
+					map.getPlayer(map.getGrid()[posX][posY].getSoldier().getIdPlayerOwner()).getName(),
+					map.getPlayer(map.getGrid()[posX2][posY2].getSoldier().getIdPlayerOwner()).getName(),
+					Constantes.COMBAT_TYPE_SOLDIER
+					);
+			
+			map.getGrid()[posX][posY].getSoldier().setLastActionTurn(map.getTurn());
+			
+			if(combat.isVictory()) {
+				
+				if(map.getGrid()[posX2][posY2].getType() != Constantes.TILE_TYPE_CITY) {
 					map.move(posX, posY, posX2, posY2, idPlayer);
-					
 				}
 				else {
-					map.getGrid()[posX2][posY2].receiveDamage(combat.getDefLifeAfterCombat());
+					map.getGrid()[posX2][posY2].clearSoldier();
 				}
-    			
-    			request.setAttribute("combat", combat);
-    			dispatcher = request.getRequestDispatcher("combat.jsp");
-    		}
-    		else {
-    			map.move(posX, posY, posX2, posY2, idPlayer);
-    			
-		        dispatcher = request.getRequestDispatcher("game.jsp");
-    		}
-    		
-		      try {
-		 		dispatcher.forward(request, response);
-		 		} catch (ServletException e) {
-		 			// TODO Auto-generated catch block
-		 			e.printStackTrace();
-		 		} catch (IOException e) {
-		 			// TODO Auto-generated catch block
-		 			e.printStackTrace();
-		 		}
-    	}
-    	else {
-    		request.setAttribute("idPlayer",  idPlayer);
-	        request.getSession().setAttribute("map", map);
-	        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
-	       
-	        System.out.println("Cant move");
+				
+			}
+			else {
+				map.getGrid()[posX2][posY2].getSoldier().setDefensePoint(combat.getDefLifeAfterCombat());
+			}
+			
+
+			request.setAttribute("combat", combat);
+			dispatcher = request.getRequestDispatcher("combat.jsp");
+		}
+		else if(map.getGrid()[posX2][posY2].getType() == Constantes.TILE_TYPE_CITY && map.getGrid()[posX2][posY2].getState() != map.getIdPlayerTurn()){
+			request.setAttribute("atqX", posX);
+			request.setAttribute("atqY", posY);
+			request.setAttribute("defX", posX2);
+			request.setAttribute("defX", posY2);
+			
+			
+			
+			Combat combat = new Combat(
+					map.getGrid()[posX2][posY2].getDefense(),
+					"attaque",
+					"defense",
+					Constantes.COMBAT_TYPE_CITY
+					);
+			
+			map.getGrid()[posX][posY].getSoldier().setLastActionTurn(map.getTurn());
+			
+			if(combat.isVictory()) {
+				
+				map.move(posX, posY, posX2, posY2, idPlayer);
+				
+			}
+			else {
+				map.getGrid()[posX2][posY2].receiveDamage(combat.getDefLifeAfterCombat());
+			}
+			
+			request.setAttribute("combat", combat);
+			dispatcher = request.getRequestDispatcher("combat.jsp");
+		}
+		else {
+			map.move(posX, posY, posX2, posY2, idPlayer);
+			
+	        dispatcher = request.getRequestDispatcher("game.jsp");
+		}
+		
+      try {
+ 		dispatcher.forward(request, response);
+ 		} catch (ServletException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (IOException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+	}
+    
+    private void gameRedirection(HttpServletRequest request, HttpServletResponse response, int idPlayer, Map map) {
+    	
+    	 request.setAttribute("idPlayer",  idPlayer);
+	     request.getSession().setAttribute("map", map);
 	        
-	        try {
-	 		dispatcher.forward(request, response);
-	 		} catch (ServletException e) {
-	 			// TODO Auto-generated catch block
-	 			e.printStackTrace();
-	 		} catch (IOException e) {
-	 			// TODO Auto-generated catch block
-	 			e.printStackTrace();
-	 		}
-    	}
-    }
+        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+      
+        try {
+ 		dispatcher.forward(request, response);
+ 		} catch (ServletException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		} catch (IOException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
+    }	
 }

@@ -23,28 +23,17 @@ public class FrontControllerServlet extends HttpServlet {
 		}
 		else {
 			
-			//idPlayerAttribution
-			/*String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
-			int playerId;
-			
-			if(playerIdStr == null ) {
-			   playerId = map.getIdNewPlayer();
-			   request.getSession().setAttribute("idPlayer", String.valueOf(playerId));
-			   map.getPlayer(playerId).setIdUser(Integer.parseInt(idUserStr));
-			   
-			   	request.setAttribute("idPlayer", playerId);
-				request.getSession().setAttribute("map", map);
-		        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
-		        dispatcher.forward(request, response);
-		   }
-		   else {*/
-			   
-			   
 		   Integer playerId = Integer.parseInt((String) request.getSession().getAttribute("idPlayer"));
 		   
 		   String action = request.getParameter("action");
 		   if(action != null && !action.isEmpty()) {
-				new ActionsController().handleRequest(request, response);
+			   
+			   	if(action.equals("scoreGame") || action.equals("scoreHistory")) {
+			   		new ScoresController().handleRequest(request, response);
+			   	}
+			   	else {
+					new ActionsController().handleRequest(request, response);
+			   	}
 			}  
 		   else {
 				request.setAttribute("idPlayer", playerId);

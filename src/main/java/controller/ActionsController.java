@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 
+import dao.DatabaseDAOImpl;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -138,6 +139,7 @@ public class ActionsController extends HttpServlet {
 				
 				if(map.getGrid()[posX2][posY2].getType() != Constantes.TILE_TYPE_CITY) {
 					map.move(posX, posY, posX2, posY2, idPlayer);
+					DatabaseDAOImpl.combatWin(map.getIdGame(), idPlayer);
 				}
 				else {
 					map.getGrid()[posX2][posY2].clearSoldier();
@@ -176,6 +178,7 @@ public class ActionsController extends HttpServlet {
 			if(combat.isVictory()) {
 				
 				map.move(posX, posY, posX2, posY2, idPlayer);
+				DatabaseDAOImpl.cityWin(map.getIdGame(), idPlayer);
 				
 			}
 			else {

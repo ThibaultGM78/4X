@@ -43,13 +43,27 @@ public class LoginController extends HttpServlet {
             Integer idUser = DatabaseDAOImpl.authenticateUser(username, mdp);
             if (idUser >= 0) {
             	
+            	 Map map = Map.getInstance();
+            	
+            	if(map.getCurrentNumberOfPlayer() == 0) {
+            		int idGame = DatabaseDAOImpl.createNewGame(idUser);
+            		map.setIdGame(idGame);
+            		
+            		System.out.println("idGame :" + idGame);
+            	}
+            	
             	String name = DatabaseDAOImpl.getUserName(idUser);
    
-                Map map = Map.getInstance();
+            	
+            	int nPlayerBefore = map.getCurrentNumberOfPlayer();
                 int idPlayer = map.getIdNewPlayer(idUser, name);
                 
-                System.out.println("New session player : " + idPlayer + "/ name :" + name);
+                if(idPlayer > 0 && map.getCurrentNumberOfPlayer() > nPlayerBefore) {
+                	DatabaseDAOImpl.addPlayer(idUser, idPlayer, map.getIdGame());
+                }
                 
+                System.out.println("New session player : " + idPlayer + "/ name :" + name);
+   
                 request.getSession().setAttribute("idPlayer", String.valueOf(idPlayer));
                 request.getSession().setAttribute("idUser", String.valueOf(idUser));
 				request.getSession().setAttribute("map", map);

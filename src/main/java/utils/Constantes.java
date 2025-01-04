@@ -37,4 +37,7 @@ public class Constantes{
 	public static final int CITY_DEFENSE = 8;
 	public static final int SOLDIER_DEFENSE = 12;
 	public static final int SOLDIER_HEAL = 4;
+	
+	public static final int SCORE_VALUE_COMBAT_WIN = 1;
+	public static final int SCORE_VALUE_CITY_WIN = 4;
 }

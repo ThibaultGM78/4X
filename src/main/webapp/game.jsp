@@ -19,6 +19,7 @@
 	    	<div class="info">
 	    	<h1>4X</h1>
 			<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %></p>
+			<button type="submit" onclick="setAction('scoreHistory')">Afficher l'historiuqe de score</button>
 			<% if(idPlayer > 0) {
 				%>
 				<p>Joueur: <%=(String) map.getPlayer(idPlayer).getName()%></p>
@@ -115,10 +116,9 @@
 					    </div>
 					</div>
 		    		
-		    		
 				    <button type="submit" onclick="setAction('endTurn')">Fin de tour</button>
 				    <% } %>
-		    
+		    		<button type="submit" onclick="setAction('scoreGame')">Afficher le score</button>
 		    </div>
 		    <div class="grid">
 		        <% 
@@ -172,20 +172,6 @@
             actionInput.value = action; 
             form.appendChild(actionInput);
             
-            /*var selectedSoldier = document.getElementById("posSoldat").value;
-            var soldierInput = document.createElement("input");
-            soldierInput.type = "hidden";
-            soldierInput.name = "selectedSoldier"; 
-            soldierInput.value = selectedSoldier;
-            form.appendChild(soldierInput);*/
-            
-            /*var selectedCity = document.getElementById("posCity").value;
-            var cityInput = document.createElement("input");
-            cityInput.type = "hidden";
-            cityInput.name = "selectedCity"; 
-            cityInput.value = selectedCity;
-            form.appendChild(cityInput);*/
-
             document.body.appendChild(form);
             form.submit();
         }

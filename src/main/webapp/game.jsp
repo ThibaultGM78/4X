@@ -19,7 +19,8 @@
 	    	<div class="info">
 	    	<h1>4X</h1>
 			<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %></p>
-			<button type="submit" onclick="setAction('scoreHistory')">Afficher l'historiuqe de score</button>
+			<button type="submit" onclick="setAction('scoreHistory')">Afficher l'historique de score</button>
+			<button type="submit" onclick="setAction('deconnexion')">Deconnexion</button>
 			<% if(idPlayer > 0) {
 				%>
 				<p>Joueur: <%=(String) map.getPlayer(idPlayer).getName()%></p>

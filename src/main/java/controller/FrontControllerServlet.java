@@ -28,7 +28,15 @@ public class FrontControllerServlet extends HttpServlet {
 		   String action = request.getParameter("action");
 		   if(action != null && !action.isEmpty()) {
 			   
-			   	if(action.equals("scoreGame") || action.equals("scoreHistory")) {
+			   	if(action.equals("deconnexion")) {
+			   		request.getSession().invalidate();
+			   		request.getSession(true);
+
+			   		RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+			   		dispatcher.forward(request, response);
+
+			   	}
+			   	else if(action.equals("scoreGame") || action.equals("scoreHistory")) {
 			   		new ScoresController().handleRequest(request, response);
 			   	}
 			   	else {

@@ -55,18 +55,20 @@ public class ActionsController extends HttpServlet {
 			    	map.getGrid()[posSoldierX][posSoldierY].getSoldier().receiveHeal(Constantes.SOLDIER_HEAL);
 			    	map.getGrid()[posSoldierX][posSoldierY].getSoldier().setLastActionTurn(map.getTurn());
 			    	
-			        System.out.println("Forage");
+			        System.out.println("Heal");
 			        this.gameRedirection(request, response, idPlayer, map);
 			    }
 	    }
 	    else {
-	    	 String posCity = request.getParameter("selectedCity"); 
+	    	String posCity = request.getParameter("selectedCity"); 
+
 	 	    if(posCity != null && posCity != "") {
 	 	    	   	String[] posParts = posCity.split(",");
 	 			    int posCityX = Integer.parseInt(posParts[0]);
 	 			    int posCityY = Integer.parseInt(posParts[1]);
 	 			    
 	 			    if(action.equals("former")) {
+	 			    	
 	 			    	if(!map.getGrid()[posCityX][posCityY].isSoldier()) {
 	 			    		
 	 			    		if(map.getPlayer(map.getIdPlayerTurn()).getGold() >= Constantes.COST_SOLDIER) {
@@ -156,12 +158,16 @@ public class ActionsController extends HttpServlet {
 			request.setAttribute("defX", posX2);
 			request.setAttribute("defX", posY2);
 			
-			
+			int cityState = map.getGrid()[posX2][posY2].getState();
+			String cityName = "Cité";
+			if(cityState > 0 && cityState <= Constantes.MAP_N_PLAYER) {
+				cityName = "Cité de " + map.getPlayer(cityState).getName();
+			}
 			
 			Combat combat = new Combat(
 					map.getGrid()[posX2][posY2].getDefense(),
-					"attaque",
-					"defense",
+					map.getPlayer(map.getGrid()[posX][posY].getSoldier().getIdPlayerOwner()).getName(),
+					cityName,
 					Constantes.COMBAT_TYPE_CITY
 					);
 			

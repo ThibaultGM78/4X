@@ -26,9 +26,7 @@ public class Map {
         
         this.idPlayerTurn = 1;
         this.setTurn(0);
-        
-        this.getGrid()[0][0].setSoldier(new Soldier(1));
-        this.getGrid()[1][0].setSoldier(new Soldier(2));
+
     }
 
     // Méthode pour obtenir l'instance unique (singleton)
@@ -198,7 +196,6 @@ public class Map {
         	for(int j = 0; j < Constantes.MAP_SIZE; j++) {
         		if(this.grid[i][j].getType() == Constantes.TILE_TYPE_CITY && this.grid[i][j].getState() == this.getIdPlayerTurn()) {
         			
-        			System.out.println("Money: " + i + " / " + j);
         			this.players[this.getIdPlayerTurn() - 1].addGold(Constantes.REWARD_CITY_CONTROL);
         		}
         	}

@@ -16,30 +16,38 @@
 	%>
 	<div>
 	    <div class="container">
-	    	<div>
+	    	<div class="info">
 	    	<h1>4X</h1>
-			<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %> 
-				/ Name == <%= map.getPlayer(Integer.parseInt((String) session.getAttribute("idPlayer"))).getName() %></p>
-			<p>Argent: <%= map.getPlayer(idPlayer).getGold() %></p>
+			<p>idPlayer == <%= (String) session.getAttribute("idPlayer") %> / idUser == <%= (String) session.getAttribute("idUser") %></p>
+			<% if(idPlayer > 0) {
+				%>
+				<p>Joueur: <%=(String) map.getPlayer(idPlayer).getName()%></p>
+				<p>Argent: <%= (Integer) map.getPlayer(idPlayer).getGold()%></p>
+				<%
+			}
+			%>
+			
 			<p>Tour de <%= map.getActuelPlayer().getName() %></p>
-		    <% if(map.getIdPlayerTurn() == Integer.parseInt((String) session.getAttribute("idPlayer"))){
+		    <% if(map.getIdPlayerTurn() == idPlayer){
 		    	%>
 		    		<div>
-					    <h2>Action Soldat</h2>
+					    <h4>Action Soldat</h4>
 						<div id="soldier-actions">
 						    <%
 						        String pos;
 						        for (int i = 0; i < Constantes.MAP_SIZE; i++) {
 						            for (int j = 0; j < Constantes.MAP_SIZE; j++) {
 						                if (map.getGrid()[i][j].isSoldier() &&
-						                    map.getGrid()[i][j].getSoldier().getIdPlayerOwner() == map.getIdPlayerTurn() &&
-						                    map.getGrid()[i][j].getSoldier().getLastActionTurn() < map.getTurn()) {
+						                    map.getGrid()[i][j].getSoldier().getIdPlayerOwner() == map.getIdPlayerTurn() 
+						                    ) {
 						
 						                    pos = i + "," + j;
 						    %>
 						        <div class="soldier-row">
-						            <span>Soldat <%= pos %>, defense = <%= map.getGrid()[i][j].getSoldier().getDefensePoint() %> </span>
+						            <span>Soldat [<%= pos %>]; defense = <%= map.getGrid()[i][j].getSoldier().getDefensePoint() %> :</span>
 						            
+						            <% if( map.getGrid()[i][j].getSoldier().getLastActionTurn() < map.getTurn()) {
+						             %>
 						            <% 
 						            if(map.canMove(i - 1, j)){
 						            	%><button type="button" onclick="setActionSoldier('top', '<%= pos %>')">Haut</button><% 
@@ -69,6 +77,7 @@
 						            if(map.getGrid()[i][j].getSoldier().isBlessed()){
 						            	%><button type="button" onclick="setActionSoldier('heal', '<%= pos %>')">Soin</button><% 
 						            }
+						            }
 						            %>
 						        </div>
 						    <%
@@ -80,7 +89,7 @@
 					    
 				        <div>
 
-					        <h2>Action Cité</h2>
+					        <h4>Action Cité</h4>
 							<div id="city-actions">
 							    <%
 							        for (int i = 0; i < Constantes.MAP_SIZE; i++) {
@@ -91,10 +100,10 @@
 							                    pos = i + "," + j;
 							    %>
 							        <div class="city-row">
-							            <span>Cité <%= pos %></span>
+							            <span>Cité [<%= pos %>]:</span>
 							            
-							            <% if(map.getActuelPlayer().getGold() >= Constantes.COST_SOLDIER){
-							            	%><button type="button" onclick="setCityAction('former', '<%= pos %>')">Former une troupe</button><%
+							            <% if(map.getActuelPlayer().getGold() >= Constantes.COST_SOLDIER && !map.getGrid()[i][j].isSoldier()){
+							            	%><button type="button" onclick="setActionCity('former', '<%= pos %>')">Former une troupe</button><%
 							            }%>
 							        </div>
 							    <%
@@ -202,6 +211,26 @@
             form.submit();
         }
         
+        function setActionCity(action,pos){
+        	var form = document.createElement("form");
+            form.method = "POST";
+            form.action = "Board";
+            
+            var actionInput = document.createElement("input");
+            actionInput.type = "hidden";
+            actionInput.name = "action"; 
+            actionInput.value = action; 
+            form.appendChild(actionInput);
+            
+            var cityInput = document.createElement("input");
+            cityInput.type = "hidden";
+            cityInput.name = "selectedCity"; 
+            cityInput.value = pos;
+            form.appendChild(cityInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
     </script>
 </body>
 </html>

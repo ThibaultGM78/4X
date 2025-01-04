@@ -60,3 +60,7 @@ body {
 .container{
 	display: flex;
 }
+
+.info {
+	width: 40vw;
+}

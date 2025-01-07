@@ -18,7 +18,20 @@ th, td {
 	padding: 8px;
 	text-align: center;
 }
+
+.nextGameBtn {
+    display: none;
+}
 </style>
+<script>
+    // JavaScript pour afficher le bouton après 20 secondes
+    window.onload = function() {
+        setTimeout(function() {
+            document.getElementById("nextGameBtn").style.display = "block";
+            console.log("lezgongue")
+        }, 10000);
+    };
+</script>
 </head>
 <body>
 	<h1>Liste des Scores</h1>
@@ -26,12 +39,11 @@ th, td {
 	// Simuler ou récupérer la liste de scores (normalement fournie par un contrôleur ou DAO)
 	List<ScoreDTO> scores = (List<ScoreDTO>) request.getAttribute("scores");
 	model.Map map = (model.Map) session.getAttribute("map");
-	if (scores == null || scores.isEmpty()) {
 	%>
-	<p>Aucun score trouvé.</p>
-	<%
-	} else {
-	%>
+	<h1>Score de fin de partie</h1>
+	<p>
+		Victoire de :
+		<%=map.getPlayer(scores.get(0).getIdPlayer()).getName()%>
 	<table>
 		<thead>
 			<tr>
@@ -56,13 +68,11 @@ th, td {
 			%>
 		</tbody>
 	</table>
-	<%
-	}
-	%>
-	<div class="button-container">
-		<form action="<%=request.getContextPath()%>/Board" method="post">
-			<button type="submit">Retour au Plateau</button>
-		</form>
-	</div>
+	
+	<div>
+        <form action="<%= request.getContextPath() %>/Board" method="post">
+           <button class="nextGameBtn" id="nextGameBtn" type="submit">Nouvelle Partie</button>
+        </form>
+    </div>
 </body>
 </html>

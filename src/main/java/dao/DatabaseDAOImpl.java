@@ -173,7 +173,7 @@ public class DatabaseDAOImpl{
 		 List<ScoreDTO> scores = new ArrayList<>();
 		    try {
 		        Connection connection = DbConnection.getConnection();
-		        String query = "SELECT idPlayer,nCombatWin,nCityWin,score FROM scores WHERE idGame = ? ORDER BY score";
+		        String query = "SELECT idPlayer,nCombatWin,nCityWin,score FROM scores WHERE idGame = ? ORDER BY score DESC";
 		        PreparedStatement stmt = connection.prepareStatement(query);
 		        stmt.setLong(1, idGame);
 

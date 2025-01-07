@@ -9,3 +9,14 @@ CREATE TABLE users (
     idLastGame INT
 );
 
+DROP TABLE IF EXISTS scores;
+CREATE TABLE scores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    idGame INT,
+    idUser INT NOT NULL,
+    idPlayer INT NOT NULL,
+    nCombatWin INT,
+    nCityWin INT,
+    score INT
+);
+

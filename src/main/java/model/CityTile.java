@@ -6,5 +6,4 @@ public class CityTile extends Tile{
 		super(1,"images/icons/Small/city.png");
 	}
 
-	
 }

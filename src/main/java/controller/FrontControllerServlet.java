@@ -5,50 +5,54 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.*;
-import java.sql.SQLException;
 
 @WebServlet("/Board")
 public class FrontControllerServlet extends HttpServlet {
     
 	private static final long serialVersionUID = 1L;
-	private  Map map = new Map();
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
+		//SESSION
 		String idUserStr = (String) request.getSession().getAttribute("idUser");
 		
+		Map map = Map.getInstance();
+	
 		if(idUserStr == null) {
 			new LoginController().handleRequest(request, response);
 		}
 		else {
 			
-			String action = request.getParameter("action");
-		    String playerIdStr = (String) request.getSession().getAttribute("idPlayer");
-
-		   int playerId;
-		   if(playerIdStr == null ) {
-			   playerId = map.getIdNewPlayer();
-			   request.getSession().setAttribute("idPlayer", String.valueOf(playerId));
-		   }
-		   else {
-			   playerId = Integer.parseInt(playerIdStr);
-		   }
+		   Integer playerId = Integer.parseInt((String) request.getSession().getAttribute("idPlayer"));
 		   
-		   if(playerId == map.getIdPlayerTurn() && action != null) {
+		   String action = request.getParameter("action");
+		   if(action != null && !action.isEmpty()) {
 			   
-			   if(action.equals("endTurn")) {
-				   this.map.setNextPlayerTurn();
-			   }
+			   	if(action.equals("deconnexion")) {
+			   		request.getSession().invalidate();
+			   		request.getSession(true);
+
+			   		RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+			   		dispatcher.forward(request, response);
+
+			   	}
+			   	else if(action.equals("scoreGame") || action.equals("scoreHistory")) {
+			   		new ScoresController().handleRequest(request, response);
+			   	}
+			   	else {
+					new ActionsController().handleRequest(request, response);
+			   	}
+			}  
+		   else {
+				request.setAttribute("idPlayer", playerId);
+				request.getSession().setAttribute("map", map);
+		        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+		        dispatcher.forward(request, response);
+		        
+		        System.out.println("Refresh: " + playerId + " / " + action + "/ " + map.getIdPlayerTurn());
 		   }
-		 
-	       request.setAttribute("idPlayer", playerId);
-			
-			request.setAttribute("map", map);
-	        RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
-	        dispatcher.forward(request, response);
-	        System.out.println("Refresh: " + playerId + " / " + action + "/ " + this.map.getIdPlayerTurn());
-	}
-		
+
+		}
     }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

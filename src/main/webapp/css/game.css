@@ -56,3 +56,11 @@ body {
     height: 100%;
     z-index: 2;
 } 
+
+.container{
+	display: flex;
+}
+
+.info {
+	width: 40vw;
+}

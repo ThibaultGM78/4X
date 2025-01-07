@@ -4,175 +4,263 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import model.CityTile;
 import utils.Constantes;
-import model.DefaultTile;
-import model.ForestTile;
-import model.MountainTile;
-import model.Player;
-import model.Soldier;
-import model.Tile;
 
 public class Map {
-	//Var
-	private Tile[][] grid;
-	private Player[] players;
-	private int idPlayerTurn;
-	private int idGame;
-	  
-	//Constructor
-	public Map() {
-		this.grid = new Tile[Constantes.MAP_SIZE][Constantes.MAP_SIZE];
-		this.players = new Player[Constantes.MAP_N_PLAYER];
-	
-		this.fillGridRandomly();
-		//this.grid[1][1] = new CityTile();
-		//this.grid[1][1].setState(1);
-		
-		//
-		this.idPlayerTurn = 1;
-	}
-	
-	//GetSet
-	public Tile[][] getGrid() {
-		return grid;
-	}
-	
-	public void setGrid(Tile[][] grid) {
-		this.grid = grid;
-	}
+    // Variable pour l'instance unique du singleton
+    private static Map instance;
 
-	public Player[] getPlayers() {
-		return players;
-	}
+    // Grille, joueurs, et autres variables
+    private Tile[][] grid;
+    private Player[] players;
+    private int idPlayerTurn;
+    private int idGame;
+    private int turn;
+    
+    // Constructor privé pour éviter l'instanciation extérieure
+    private Map() {
+        this.grid = new Tile[Constantes.MAP_SIZE][Constantes.MAP_SIZE];
+        this.players = new Player[Constantes.MAP_N_PLAYER];
 
-	public void setPlayers(Player[] players) {
-		this.players = players;
-	}
-	
-	public int getIdPlayerTurn() {
-		return idPlayerTurn;
-	}
+        this.fillGridRandomly();
+        
+        this.idPlayerTurn = 1;
+        this.setTurn(0);
 
-	public void setIdPlayerTurn(int idPlayerTurn) {
-		this.idPlayerTurn = idPlayerTurn;
-	}
+    }
 
-	
-	public int getIdGame() {
-		return idGame;
-	}
+    // Méthode pour obtenir l'instance unique (singleton)
+    public static Map getInstance() {
+        if (instance == null) {
+            instance = new Map();  // Initialisation uniquement si l'instance n'existe pas
+        }
+        return instance;
+    }
+    
+    public void reset() {
+        // Réinitialiser la grille
+        this.grid = new Tile[Constantes.MAP_SIZE][Constantes.MAP_SIZE];
+        this.fillGridRandomly();  // Remplir la grille avec de nouvelles positions pour les éléments
 
-	public void setIdGame(int idGame) {
-		this.idGame = idGame;
-	}
+        // Réinitialiser les joueurs et attribuer un soldat à chaque joueur
+        for (int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
+            if (this.players[i] != null) {
+                // Réinitialisation de l'or du joueur
+                this.players[i].setGold(0);
 
-	//Methode
-	public void fillGridRandomly() {
-	    ArrayList<int[]> positions = new ArrayList<>();
-	    
-	    //Générer toutes les positions possibles dans une grille 10x10
-	    for (int i = 0; i < Constantes.MAP_SIZE; i++) {
-	        for (int j = 0; j < Constantes.MAP_SIZE; j++) {
-	            positions.add(new int[] { i, j });
-	        }
-	    }
-	    
-	    // Mélanger les positions pour garantir l'aléatoire
-	    Collections.shuffle(positions);
+                // Ajouter un soldat au joueur
+                Random random = new Random();
+                int iPos, jPos;
+                
+                // Placer un soldat à une position valide (pas de montagne, pas de soldat déjà présent)
+                do {
+                    iPos = random.nextInt(Constantes.MAP_SIZE);
+                    jPos = random.nextInt(Constantes.MAP_SIZE);
+                } while (this.grid[iPos][jPos].getType() == Constantes.TILE_TYPE_MOUNTAIN || this.grid[iPos][jPos].isSoldier());
 
-	    // Placer les villes
-	    ArrayList<int[]> cityPositions = new ArrayList<>();
-	    int citiesPlaced = 0;
-	    for (int[] pos : positions) {
-	        if (citiesPlaced == 4) break;
-	        boolean valid = true;
-	        for (int[] city : cityPositions) {
-	            int distance = Math.abs(city[0] - pos[0]) + Math.abs(city[1] - pos[1]);
-	            if (distance < 4) {
-	                valid = false;
-	                break;
-	            }
-	        }
-	        if (valid) {
-	            this.grid[pos[0]][pos[1]] = new CityTile();
-	            cityPositions.add(pos);
-	            citiesPlaced++;
-	        }
-	    }
-	    
-	    // Retirer les positions utilisées pour les villes
-	    positions.removeAll(cityPositions);
+                this.grid[iPos][jPos].setSoldier(new Soldier(i + 1));  // Attribuer un soldat au joueur
+            }
+        }
 
-	    // Placer les montagnes
-	    int mountainsPlaced = 0;
-	    for (int[] pos : positions) {
-	        if (mountainsPlaced == 5) break;
-	        this.grid[pos[0]][pos[1]] = new MountainTile();
-	        mountainsPlaced++;
-	    }
+        // Réinitialiser le tour et le joueur actuel
+        this.setTurn(0);
+        this.setIdPlayerTurn(1);  // Le premier joueur commence
+    }
 
-	    // Retirer les positions utilisées pour les montagnes
-	    positions = new ArrayList<>(positions.subList(mountainsPlaced, positions.size()));
 
-	    // Placer les forêts
-	    int forestsPlaced = 0;
-	    for (int[] pos : positions) {
-	        if (forestsPlaced == 10) break;
-	        this.grid[pos[0]][pos[1]] = new ForestTile();
-	        forestsPlaced++;
-	    }
 
-	    // Remplir les cases restantes avec des tuiles par défaut
-	    for (int i = 0; i < Constantes.MAP_SIZE; i++) {
-	        for (int j = 0; j < Constantes.MAP_SIZE; j++) {
-	            if (this.grid[i][j] == null) {
-	                this.grid[i][j] = new DefaultTile();
-	            }
-	        }
-	    }
-	}
+    // Getters et Setters (inchangés)
+    public Tile[][] getGrid() {
+        return grid;
+    }
 
-	public int getIdNewPlayer() {
-		
-		for(int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
-			if(this.players[i] == null) {
-				this.addNewPlayer(i);
-				return i + 1;
-			}
-			
-		}
-		return 0;
-	}
+    public void setGrid(Tile[][] grid) {
+        this.grid = grid;
+    }
 
-	public int getCurrentNumberOfPlayer() {
-		
-		for(int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
-			if(this.players[i] == null) {
-				return i;
-			}
-		}
-		return 4;
-	}
-	
-	public void setNextPlayerTurn() {
-		
-		int x = this.idPlayerTurn + 1;
-		this.idPlayerTurn = x > this.getCurrentNumberOfPlayer() ? 1 : x; 
-	}
-	
-	public void addNewPlayer(int id) {
-		this.players[id] = new Player();
-		
-	    Random random = new Random();
-	    int i, j;
-	    
-	   do {
-	    	i =  random.nextInt(10);
-	    	j = random.nextInt(10);
-	    }while(this.grid[i][j].isSoldier() || this.grid[i][j].getType() == Constantes.TILE_TYPE_MOUNTAIN);
-	    
-	    this.grid[i][j].setSoldier(new Soldier(id + 1));
-	}
+    public Player[] getPlayers() {
+        return players;
+    }
 
+    public void setPlayers(Player[] players) {
+        this.players = players;
+    }
+
+    public int getIdPlayerTurn() {
+        return idPlayerTurn;
+    }
+
+    public void setIdPlayerTurn(int idPlayerTurn) {
+        this.idPlayerTurn = idPlayerTurn;
+    }
+
+    public int getIdGame() {
+        return idGame;
+    }
+
+    public void setIdGame(int idGame) {
+        this.idGame = idGame;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+    
+    // Méthodes existantes (inchangées)
+    public void fillGridRandomly() {
+        ArrayList<int[]> positions = new ArrayList<>();
+        for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+            for (int j = 0; j < Constantes.MAP_SIZE; j++) {
+                positions.add(new int[] { i, j });
+            }
+        }
+        Collections.shuffle(positions);
+
+        // Placer les villes
+        ArrayList<int[]> cityPositions = new ArrayList<>();
+        int citiesPlaced = 0;
+        for (int[] pos : positions) {
+            if (citiesPlaced == 4) break;
+            boolean valid = true;
+            for (int[] city : cityPositions) {
+                int distance = Math.abs(city[0] - pos[0]) + Math.abs(city[1] - pos[1]);
+                if (distance < 4) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                this.grid[pos[0]][pos[1]] = new CityTile();
+                cityPositions.add(pos);
+                citiesPlaced++;
+            }
+        }
+
+        // Retirer les positions utilisées pour les villes
+        positions.removeAll(cityPositions);
+
+        // Placer les montagnes
+        int mountainsPlaced = 0;
+        for (int[] pos : positions) {
+            if (mountainsPlaced == 5) break;
+            this.grid[pos[0]][pos[1]] = new MountainTile();
+            mountainsPlaced++;
+        }
+
+        // Retirer les positions utilisées pour les montagnes
+        positions = new ArrayList<>(positions.subList(mountainsPlaced, positions.size()));
+
+        // Placer les forêts
+        int forestsPlaced = 0;
+        for (int[] pos : positions) {
+            if (forestsPlaced == 10) break;
+            this.grid[pos[0]][pos[1]] = new ForestTile();
+            forestsPlaced++;
+        }
+
+        // Remplir les cases restantes avec des tuiles par défaut
+        for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+            for (int j = 0; j < Constantes.MAP_SIZE; j++) {
+                if (this.grid[i][j] == null) {
+                    this.grid[i][j] = new DefaultTile();
+                }
+            }
+        }
+    }
+
+    public int getIdNewPlayer(int idUser, String name) {
+        for (int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
+            if (this.players[i] == null) {
+                this.addNewPlayer(i, idUser, name);
+                
+                return i + 1;
+            }
+            if(this.players[i].getIdUser() == idUser) {
+            	return i + 1;
+            }
+        }
+        return 0;
+    }
+
+    public int getCurrentNumberOfPlayer() {
+        for (int i = 0; i < Constantes.MAP_N_PLAYER; i++) {
+            if (this.players[i] == null) {
+                return i;
+            }
+        }
+        return 4;
+    }
+
+    public void setNextPlayerTurn() {
+        int x = this.idPlayerTurn + 1;
+        this.idPlayerTurn = x > this.getCurrentNumberOfPlayer() ? 1 : x;
+    }
+
+    public void addNewPlayer(int idPlayer, int idUser, String name) {
+        this.players[idPlayer] = new Player();
+
+        this.players[idPlayer].setIdUser(idUser);
+        this.players[idPlayer].setName(name);
+        
+        Random random = new Random();
+        int i, j;
+
+        do {
+            i = random.nextInt(10);
+            j = random.nextInt(10);
+        } while (this.grid[i][j].isSoldier() || this.grid[i][j].getType() == Constantes.TILE_TYPE_MOUNTAIN);
+
+        this.grid[i][j].setSoldier(new Soldier(idPlayer + 1));
+    }
+
+    public Player getPlayer(int i) {
+        return this.players[i - 1];
+    }
+
+    public void nextTurn() {
+        this.turn += 1;
+        
+        for(int i = 0; i < Constantes.MAP_SIZE; i++) {
+        	for(int j = 0; j < Constantes.MAP_SIZE; j++) {
+        		if(this.grid[i][j].getType() == Constantes.TILE_TYPE_CITY && this.grid[i][j].getState() == this.getIdPlayerTurn()) {
+        			
+        			this.players[this.getIdPlayerTurn() - 1].addGold(Constantes.REWARD_CITY_CONTROL);
+        		}
+        	}
+        }
+        this.setNextPlayerTurn();
+    }
+
+    public boolean canMove(int y, int x) {
+        if (x < 0 || x >= Constantes.MAP_SIZE) return false;
+        if (y < 0 || y >= Constantes.MAP_SIZE) return false;
+        if (this.grid[y][x].getType() == Constantes.TILE_TYPE_MOUNTAIN) return false;
+        if(this.grid[y][x].isSoldier() && this.grid[y][x].getSoldier().getIdPlayerOwner() == this.idPlayerTurn) return false;
+        return true;
+    }
+
+    public void move(int x1, int y1, int x2, int y2, int idPlayer) {
+        if (this.canMove(x2, y2)) {
+            System.out.println("ca bouge: " + y2 + " / " + x2);
+            Soldier s = this.grid[x1][y1].getSoldier();
+            s.setLastActionTurn(this.turn);
+            this.grid[x1][y1].clearSoldier();
+            this.grid[x2][y2].setSoldier(s);
+            
+            if(this.grid[x2][y2].getType() == Constantes.TILE_TYPE_CITY) {
+            	this.grid[x2][y2].setState(idPlayer);
+            	
+            }
+            
+        }
+    }
+    
+    public Player getActuelPlayer() {
+    	return this.getPlayer(this.idPlayerTurn);
+    }
+    
 }

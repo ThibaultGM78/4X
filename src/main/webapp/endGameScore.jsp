@@ -22,6 +22,19 @@ th, td {
 .nextGameBtn {
     display: none;
 }
+
+.p1{
+	background-color: #FF474D;
+}
+.p2{
+	background-color: #ADDFFF;
+}
+.p3{
+	background-color: #96F97A;
+}
+.p4{
+	background-color: #FCA746;
+}
 </style>
 <script>
     // JavaScript pour afficher le bouton après 20 secondes
@@ -57,7 +70,7 @@ th, td {
 			<%
 			for (ScoreDTO score : scores) {
 			%>
-			<tr>
+			<tr class="<%= "p" + score.getIdPlayer()%>">
 				<td><%=map.getPlayer(score.getIdPlayer()).getName()%></td>
 				<td><%=score.getNCombatWin()%></td>
 				<td><%=score.getNCityWin()%></td>

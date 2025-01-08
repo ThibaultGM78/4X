@@ -16,6 +16,19 @@
             padding: 8px;
             text-align: center;
         }
+        
+        .p1{
+			background-color: #FF474D;
+		}
+		.p2{
+			background-color: #ADDFFF;
+		}
+		.p3{
+			background-color: #96F97A;
+		}
+		.p4{
+			background-color: #FCA746;
+		}
     </style>
 </head>
 <body>
@@ -42,7 +55,7 @@
                 <%
                     for (ScoreDTO score : scores) {
                 %>
-                    <tr>
+                    <tr class="<%= "p" + score.getIdPlayer()%>">
                         <td><%= score.getIdGame() %></td>
                         <td><%= score.getNCombatWin() %></td>
                         <td><%= score.getNCityWin() %></td>

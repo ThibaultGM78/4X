@@ -54,12 +54,23 @@ public class DatabaseDAOImpl {
         boolean isCreated = false;
         try {
             Connection connection = DbConnection.getConnection();
-            String query = "INSERT INTO users (username, mdp) VALUES (?, ?)";
-            PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, mdp);
 
-            int rowsAffected = stmt.executeUpdate();
+            String checkQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
+            PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
+            checkStmt.setString(1, username);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                System.out.println("Le nom d'utilisateur existe déjà.");
+                return false;
+            }
+
+            String insertQuery = "INSERT INTO users (username, mdp) VALUES (?, ?)";
+            PreparedStatement insertStmt = connection.prepareStatement(insertQuery);
+            insertStmt.setString(1, username);
+            insertStmt.setString(2, mdp);
+
+            int rowsAffected = insertStmt.executeUpdate();
             if (rowsAffected > 0) {
                 isCreated = true;
             }
@@ -68,6 +79,7 @@ public class DatabaseDAOImpl {
         }
         return isCreated;
     }
+
 
     /**
      * @brief Retrieves the username of a user based on the user ID.

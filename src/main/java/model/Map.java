@@ -358,12 +358,13 @@ public class Map {
         if (this.getActuelPlayer().getScore() >= Constantes.SCORE_WIN)
             return this.getActuelPlayer().getId();
 
-        if (this.getCurrentNumberOfPlayer() == Constantes.MAP_N_PLAYER) {
+        if (this.getCurrentNumberOfPlayer() >= Constantes.MAP_N_PLAYER) {
             idWinner = this.getActuelPlayer().getId();
             for (int i = 0; i < Constantes.MAP_SIZE; i++) {
                 for (int j = 0; j < Constantes.MAP_SIZE; j++) {
                     if (this.getGrid()[i][j].isSoldier()
-                            && this.getGrid()[i][j].getSoldier().getIdPlayerOwner() != this.getActuelPlayer().getId()) {
+                            && this.getGrid()[i][j].getSoldier().getIdPlayerOwner() != this.getIdPlayerTurn()) {
+                    	System.out.println("ohohoh " + this.getIdPlayerTurn());
                         return -1;
                     }
                 }

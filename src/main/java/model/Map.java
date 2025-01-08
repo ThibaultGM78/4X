@@ -21,6 +21,7 @@ public class Map {
     private int idPlayerTurn;
     private int idGame;
     private int turn;
+    private boolean gameClose;
 
     /**
      * @brief Private constructor to prevent external instantiation.
@@ -33,6 +34,7 @@ public class Map {
 
         this.idPlayerTurn = 1;
         this.setTurn(0);
+        this.gameClose = false;
     }
 
     /**
@@ -125,15 +127,20 @@ public class Map {
         return turn;
     }
 
-    /**
-     * @brief Sets the current turn.
-     * @param turn The new turn.
-     */
+
     public void setTurn(int turn) {
         this.turn = turn;
     }
+    
+    public boolean isGameClose() {
+		return gameClose;
+	}
 
-    /**
+	public void closeGame() {
+		this.gameClose = true;
+	}
+
+	/**
      * @brief Fills the grid randomly with different types of tiles.
      */
     public void fillGridRandomly() {
@@ -229,7 +236,7 @@ public class Map {
                 return i;
             }
         }
-        return 4;
+        return Constantes.MAP_N_PLAYER;
     }
 
     /**
@@ -238,6 +245,7 @@ public class Map {
     public void setNextPlayerTurn() {
         int x = this.idPlayerTurn + 1;
         this.idPlayerTurn = x > this.getCurrentNumberOfPlayer() ? 1 : x;
+        System.out.println("ICI: " + this.idPlayerTurn + " / nplayer" + this.getCurrentNumberOfPlayer());
     }
 
     /**
@@ -352,11 +360,11 @@ public class Map {
 
         if (this.getCurrentNumberOfPlayer() == Constantes.MAP_N_PLAYER) {
             idWinner = this.getActuelPlayer().getId();
-            for (int i = 1; i <= Constantes.MAP_SIZE; i++) {
-                for (int j = 1; i <= Constantes.MAP_SIZE; j++) {
+            for (int i = 0; i < Constantes.MAP_SIZE; i++) {
+                for (int j = 0; j < Constantes.MAP_SIZE; j++) {
                     if (this.getGrid()[i][j].isSoldier()
                             && this.getGrid()[i][j].getSoldier().getIdPlayerOwner() != this.getActuelPlayer().getId()) {
-                        return 0;
+                        return -1;
                     }
                 }
             }

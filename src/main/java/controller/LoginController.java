@@ -75,7 +75,7 @@ public class LoginController extends HttpServlet {
                     DatabaseDAOImpl.addPlayer(idUser, idPlayer, map.getIdGame());
                 }
 
-                System.out.println("New session player : " + idPlayer + "/ name :" + name);
+                System.out.println("New session player : " + idPlayer + "/ name :" + name + "/ nPlayer" + map.getCurrentNumberOfPlayer());
 
                 request.getSession().setAttribute("idPlayer", String.valueOf(idPlayer));
                 request.getSession().setAttribute("idUser", String.valueOf(idUser));

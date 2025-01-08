@@ -17,7 +17,7 @@ public class Constantes {
     /**
      * @brief The number of players in the game.
      */
-    public static final int MAP_N_PLAYER = 4;
+    public static final int MAP_N_PLAYER = 2;
 
     /**
      * @brief The default image path for null images.

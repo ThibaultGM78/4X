@@ -33,12 +33,50 @@ public class FrontControllerServlet extends HttpServlet {
 
         // SESSION
         String idUserStr = (String) request.getSession().getAttribute("idUser");
-
         Map map = Map.getInstance();
+        
+        String newGame = (String) request.getParameter("newGame");
 
         if (idUserStr == null) {
             new LoginController().handleRequest(request, response);
-        } else {
+        } 
+        if(newGame != null && newGame.equals("true")) {
+        	
+        	System.out.println("FINN");
+        	
+        	if(map.isGameClose()) {
+        		Map.resetInstance();
+        		map = Map.getInstance();
+        	}
+        	
+        	int idUser = Integer.parseInt(idUserStr);
+        	
+        	if (map.getCurrentNumberOfPlayer() == 0) {
+                int idGame = DatabaseDAOImpl.createNewGame(idUser);
+                map.setIdGame(idGame);
+                System.out.println("idGame :" + idGame);
+            }
+
+            String name = DatabaseDAOImpl.getUserName(idUser);
+
+            int nPlayerBefore = map.getCurrentNumberOfPlayer();
+            int idPlayer = map.getIdNewPlayer(idUser, name);
+
+            if (idPlayer > 0 && map.getCurrentNumberOfPlayer() > nPlayerBefore) {
+                DatabaseDAOImpl.addPlayer(idUser, idPlayer, map.getIdGame());
+            }
+
+            System.out.println("New session player : " + idPlayer + "/ name :" + name);
+
+            request.getSession().setAttribute("idPlayer", String.valueOf(idPlayer));
+            request.getSession().setAttribute("idUser", String.valueOf(idUser));
+            request.getSession().setAttribute("map", map);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("game.jsp");
+            dispatcher.forward(request, response);
+        	
+        }
+        else {
             Integer playerId = Integer.parseInt((String) request.getSession().getAttribute("idPlayer"));
             Integer idUser = Integer.parseInt(idUserStr);
 
@@ -56,10 +94,9 @@ public class FrontControllerServlet extends HttpServlet {
                     new ActionsController().handleRequest(request, response);
                 }
             } else {
-                int idWinner = map.determineWinner();
                 RequestDispatcher dispatcher;
                 request.getSession().setAttribute("map", map);
-                if (idWinner == -1) {
+                if (!map.isGameClose()) {
                     request.setAttribute("idPlayer", playerId);
                     dispatcher = request.getRequestDispatcher("game.jsp");
                 } else {

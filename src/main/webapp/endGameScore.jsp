@@ -70,9 +70,29 @@ th, td {
 	</table>
 	
 	<div>
-        <form action="<%= request.getContextPath() %>/Board" method="post">
-           <button class="nextGameBtn" id="nextGameBtn" type="submit">Nouvelle Partie</button>
-        </form>
+
+		<button type="submit" onclick="setGame()" class="nextGameBtn" id="nextGameBtn">Refaire une partie</button> 
     </div>
 </body>
+<script>
+	
+	function setGame() {
+
+		var form = document.createElement("form");
+		form.method = "POST";
+		form.action = "Board";
+
+		var actionInput = document.createElement("input");
+		actionInput.type = "hidden";
+		actionInput.name = "newGame";
+		actionInput.value = "true";
+		form.appendChild(actionInput);
+
+		console.log("click");
+		
+		document.body.appendChild(form);
+		form.submit();
+	}
+
+</script>
 </html>

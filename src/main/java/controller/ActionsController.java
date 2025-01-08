@@ -100,6 +100,8 @@ public class ActionsController extends HttpServlet {
                 request.setAttribute("idPlayer", idPlayer);
                 dispatcher = request.getRequestDispatcher("game.jsp");
             } else {
+            	map.closeGame();
+            	
                 List<ScoreDTO> scores = DatabaseDAOImpl.getScoreGame(map.getIdGame());
                 request.setAttribute("scores", scores);
                 request.getSession().setAttribute("idPlayer", "-1");

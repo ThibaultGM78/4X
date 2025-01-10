@@ -140,6 +140,7 @@ public class Map {
 		this.gameClose = true;
 	}
 
+	//Methodes
 	/**
      * @brief Fills the grid randomly with different types of tiles.
      */

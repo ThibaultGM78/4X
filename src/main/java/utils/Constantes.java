@@ -152,7 +152,7 @@ public class Constantes {
     /**
      * @brief The score required to win the game.
      */
-    public static final int SCORE_WIN = 16;//Number of city * SCORE_VALUE_CITY_WIN
+    public static final int SCORE_WIN = 4;//16;//Number of city * SCORE_VALUE_CITY_WIN
 
     /**
      * @brief The reload time in milliseconds.

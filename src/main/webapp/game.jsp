@@ -37,7 +37,7 @@
 					    <div class="info-column">
 					    	<h3>Vous</h3>		
 					        <p>Nom: <%=(String) map.getPlayer(idPlayer).getName()%></p>
-					        <p>Score: <%=(Integer) map.getPlayer(idPlayer).getScore()%></p>
+					        <p>Score: <%=(Integer) map.getPlayer(idPlayer).getScore()%>/<%= Constantes.SCORE_WIN %></p>
 					        <p>Argent: <%=(Integer) map.getPlayer(idPlayer).getGold()%></p>
 					    </div>
 					     <div class="circle-column">

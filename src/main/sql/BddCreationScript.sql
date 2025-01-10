@@ -1,0 +1,22 @@
+CREATE DATABASE IF NOT EXISTS 4x;
+USE 4x;
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    mdp VARCHAR(255) NOT NULL,
+    idLastGame INT
+);
+
+DROP TABLE IF EXISTS scores;
+CREATE TABLE scores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    idGame INT,
+    idUser INT NOT NULL,
+    idPlayer INT NOT NULL,
+    nCombatWin INT,
+    nCityWin INT,
+    score INT
+);
+

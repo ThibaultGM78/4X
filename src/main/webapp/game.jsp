@@ -17,35 +17,48 @@
 	%>
 	<div>
 		<div class="container">
-			<div class="info">
+			<div class="info ">
 				<h1>4X</h1>
-				<p>
+				<p>	(DEV:
 					idPlayer ==
 					<%=(String) session.getAttribute("idPlayer")%>
 					/ idUser ==
-					<%=(String) session.getAttribute("idUser")%></p>
+					<%=(String) session.getAttribute("idUser")%>)</p>
 				<button type="submit" onclick="setAction('scoreHistory')">Afficher
 					l'historique de score</button>
 				<button type="submit" onclick="setAction('deconnexion')">Deconnexion</button>
 				<%
 				if (idPlayer > 0) {
 				%>
-				<p>
-					Joueur:
-					<%=(String) map.getPlayer(idPlayer).getName()%></p>
-				<p>
-					Score:
-					<%=(Integer) map.getPlayer(idPlayer).getScore()%></p>
-				<p>
-					Argent:
-					<%=(Integer) map.getPlayer(idPlayer).getGold()%></p>
-				<%
-				}
-				%>
-
-				<p>
-					Tour de
-					<%=map.getActuelPlayer().getName()%></p>
+				
+				<div class="infoContainer">
+					<div class="player-info">	
+							
+					    <div class="info-column">
+					    	<h3>Vous</h3>		
+					        <p>Nom: <%=(String) map.getPlayer(idPlayer).getName()%></p>
+					        <p>Score: <%=(Integer) map.getPlayer(idPlayer).getScore()%></p>
+					        <p>Argent: <%=(Integer) map.getPlayer(idPlayer).getGold()%></p>
+					    </div>
+					     <div class="circle-column">
+					        <div class="circle cell<%=idPlayer%>"></div>
+					    </div>
+					</div>
+					<%
+					}
+					%>
+					<div class="current-turn">
+					    <div>
+					        <h3>
+					            Tour de :
+					        </h3>
+					    </div>
+					    <div class="currentPlayer">
+					    	<p class="nameCurrentPlayer"><%=map.getActuelPlayer().getName()%></p>
+					        <div class="circleCurrentPlayer cell<%=map.getIdPlayerTurn()%>"></div>
+					    </div>
+					</div>
+				</div>
 				<%
 				if (map.getIdPlayerTurn() == idPlayer) {
 				%>

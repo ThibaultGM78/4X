@@ -47,7 +47,6 @@ th, td {
 </script>
 </head>
 <body>
-	<h1>Liste des Scores</h1>
 	<%
 	// Simuler ou récupérer la liste de scores (normalement fournie par un contrôleur ou DAO)
 	List<ScoreDTO> scores = (List<ScoreDTO>) request.getAttribute("scores");

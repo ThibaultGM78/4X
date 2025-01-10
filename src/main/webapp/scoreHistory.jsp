@@ -16,23 +16,15 @@
             padding: 8px;
             text-align: center;
         }
-        
-        .p1{
-			background-color: #FF474D;
-		}
-		.p2{
-			background-color: #ADDFFF;
-		}
-		.p3{
-			background-color: #96F97A;
-		}
-		.p4{
-			background-color: #FCA746;
-		}
     </style>
 </head>
 <body>
-    <h1>Liste des Scores</h1>
+    <h1>Liste des Scores: </h1>
+    <div class="button-container">
+        <form action="<%= request.getContextPath() %>/Board" method="post">
+            <button type="submit">Retour au Plateau</button>
+        </form>
+    </div>
     <%
         // Simuler ou récupérer la liste de scores (normalement fournie par un contrôleur ou DAO)
         List<ScoreDTO> scores = (List<ScoreDTO>) request.getAttribute("scores");
@@ -55,7 +47,7 @@
                 <%
                     for (ScoreDTO score : scores) {
                 %>
-                    <tr class="<%= "p" + score.getIdPlayer()%>">
+                    <tr>
                         <td><%= score.getIdGame() %></td>
                         <td><%= score.getNCombatWin() %></td>
                         <td><%= score.getNCityWin() %></td>
@@ -69,10 +61,5 @@
     <%
         }
     %>
-    <div class="button-container">
-        <form action="<%= request.getContextPath() %>/Board" method="post">
-            <button type="submit">Retour au Plateau</button>
-        </form>
-    </div>
 </body>
 </html>

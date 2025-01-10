@@ -20,5 +20,10 @@ To run the project, you need to deploy the application on a Tomcat server. You c
    You will find the database creation script in the `src/main/sql` folder. Run this script on your local database to create the necessary tables.
 
 2. **Configure the database connection:**
-   Modify the `src/main/java/dao/DbConnection.sql` file with your local database information (URL, user, and password).
+   Modify the `src/main/java/dao/DbConnection.java` file with your local database information (URL, user, and password).
 
+## Additional Configuration
+
+Don't forget to add the Jakarta Servlet and MySQL Connector libraries to the project's classpath. These libraries are essential for the proper functioning of the application, enabling communication with the server and database.
+
+By following these steps, you should be able to set up and run the 4X game successfully on your local environment.
